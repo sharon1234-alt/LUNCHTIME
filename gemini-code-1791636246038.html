@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FOOD AND VEGETABLES - Primary Learning Game</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #fdf6e3;
+        }
+        h1, h2, h3, .font-fun {
+            font-family: 'Fredoka One', cursive;
+        }
+        .pastel-card {
+            background: #ffffff;
+            border: 4px solid #f3d5b5;
+            box-shadow: 0 8px 0 #e7bc91;
+            border-radius: 24px;
+        }
+        .pastel-btn {
+            background-color: #ffb4a2;
+            border: 3px solid #e5989b;
+            box-shadow: 0 5px 0 #b5828c;
+            border-radius: 16px;
+            transition: all 0.1s ease;
+        }
+        .pastel-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 #b5828c;
+        }
+        .pastel-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #b5828c;
+        }
+        .pastel-btn-green {
+            background-color: #b7e4c7;
+            border-color: #74c69d;
+            box-shadow: 0 5px 0 #52b788;
+        }
+        .pastel-btn-green:hover { box-shadow: 0 7px 0 #52b788; }
+        .pastel-btn-green:active { box-shadow: 0 2px 0 #52b788; }
+
+        .pastel-btn-blue {
+            background-color: #a2d2ff;
+            border-color: #bde0fe;
+            box-shadow: 0 5px 0 #8eecf5;
+        }
+
+        .tile-slot {
+            width: 48px;
+            height: 48px;
+            border: 3px dashed #b5828c;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            background-color: #fff;
+            text-transform: lowercase;
+        }
+        .letter-tile {
+            width: 48px;
+            height: 48px;
+            background-color: #ffcdb2;
+            border: 2px solid #e5989b;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #b5828c;
+            user-select: none;
+            text-transform: lowercase;
+        }
+        .letter-tile:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #b5828c;
+        }
+    </style>
+</head>
+<body class="text-slate-700 min-h-screen flex flex-col justify-between p-2 md:p-6">
+
+    <!-- Header / Banner -->
+    <header class="max-w-4xl w-full mx-auto text-center my-4">
+        <div class="pastel-card p-4 bg-amber-50 flex flex-wrap justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="text-4xl">🐱</span>
+                <div class="text-left">
+                    <h1 id="app-title" class="text-2xl md:text-3xl text-pink-500 tracking-wide">FOOD AND VEGETABLES</h1>
+                    <p class="text-sm font-bold text-amber-600">SUBJECT: <span id="app-subject">ENGLISH</span> | <span id="app-standard">YEAR 1</span> - <span id="app-topic">LUNCHTIME</span></p>
+                </div>
+            </div>
+            <div class="mt-2 md:mt-0 text-right">
+                <span class="text-xs font-bold text-slate-400 block">TEACHER</span>
+                <span id="app-teacher" class="font-fun text-lg text-indigo-500">MISS HII</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN VIEW CONTAINER -->
+    <main class="max-w-4xl w-full mx-auto flex-1 flex flex-col justify-center">
+
+        <!-- VIEW: HOMEPAGE -->
+        <section id="view-home" class="pastel-card p-6 md:p-10 text-center my-auto space-y-6">
+            <div class="text-6xl animate-bounce my-2">🥦 🍎 🥥 🍓</div>
+            <h2 class="text-3xl font-fun text-slate-700">Welcome, Young Explorer!</h2>
+            <p class="text-slate-500 max-w-md mx-auto font-semibold">Enter your name below and start your fun food learning adventure!</p>
+            
+            <div class="max-w-xs mx-auto space-y-4">
+                <input type="text" id="pupil-name" placeholder="Enter Pupil Name..." class="w-full text-center px-4 py-3 rounded-2xl border-4 border-pink-200 text-xl font-bold focus:outline-none focus:border-pink-400">
+                <button onclick="startGame()" class="w-full pastel-btn pastel-btn-green py-3 text-2xl font-fun text-slate-800">🎮 START GAME</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-4">
+                <button onclick="showInstructions()" class="pastel-btn bg-yellow-100 border-yellow-300 py-2 font-bold">📜 Instructions</button>
+                <button onclick="showLeaderboard()" class="pastel-btn bg-purple-100 border-purple-300 py-2 font-bold">🏆 Leaderboard</button>
+                <button onclick="promptTeacherPIN()" class="pastel-btn bg-blue-100 border-blue-300 py-2 font-bold">🔒 Teacher Dashboard</button>
+            </div>
+        </section>
+
+        <!-- VIEW: LEVEL SELECTION -->
+        <section id="view-levels" class="hidden pastel-card p-6 md:p-8 text-center space-y-6">
+            <h2 class="text-3xl font-fun text-pink-500">Choose a Level</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Level 1 -->
+                <div class="p-6 border-4 border-green-200 rounded-3xl bg-green-50 flex flex-col justify-between">
+                    <div>
+                        <span class="text-4xl">🌱</span>
+                        <h3 class="text-xl font-fun text-green-700 mt-2">Level 1</h3>
+                        <p class="text-sm text-green-600 font-semibold mb-4">Identification (MCQ)</p>
+                    </div>
+                    <button id="btn-lvl-1" onclick="loadLevel(1)" class="pastel-btn pastel-btn-green w-full py-2 font-bold">Play Level 1</button>
+                </div>
+                <!-- Level 2 -->
+                <div class="p-6 border-4 border-blue-200 rounded-3xl bg-blue-50 flex flex-col justify-between opacity-50" id="card-lvl-2">
+                    <div>
+                        <span class="text-4xl">🧺</span>
+                        <h3 class="text-xl font-fun text-blue-700 mt-2">Level 2</h3>
+                        <p class="text-sm text-blue-600 font-semibold mb-4">Fruit or Vegetable?</p>
+                    </div>
+                    <button id="btn-lvl-2" onclick="loadLevel(2)" disabled class="pastel-btn pastel-btn-blue w-full py-2 font-bold">Locked 🔒</button>
+                </div>
+                <!-- Level 3 -->
+                <div class="p-6 border-4 border-purple-200 rounded-3xl bg-purple-50 flex flex-col justify-between opacity-50" id="card-lvl-3">
+                    <div>
+                        <span class="text-4xl">🔤</span>
+                        <h3 class="text-xl font-fun text-purple-700 mt-2">Level 3</h3>
+                        <p class="text-sm text-purple-600 font-semibold mb-4">Letter Unscramble</p>
+                    </div>
+                    <button id="btn-lvl-3" onclick="loadLevel(3)" disabled class="pastel-btn bg-purple-200 w-full py-2 font-bold">Locked 🔒</button>
+                </div>
+            </div>
+            <button onclick="showView('view-home')" class="pastel-btn bg-gray-100 border-gray-300 px-6 py-2 font-bold">⬅️ Back to Main Menu</button>
+        </section>
+
+        <!-- VIEW: GAMEPLAY (LEVEL 1 MCQ) -->
+        <section id="view-game-l1" class="hidden pastel-card p-6 md:p-8 space-y-6">
+            <div class="flex justify-between items-center border-b-2 border-amber-100 pb-3">
+                <span class="font-fun text-lg text-amber-600">Level 1: Identification</span>
+                <span id="l1-progress" class="font-bold text-slate-500">Q 1/10</span>
+            </div>
+            
+            <div id="l1-container" class="text-center space-y-4">
+                <h3 id="l1-question-text" class="text-2xl font-fun text-slate-700">What is this?</h3>
+                
+                <!-- Image Container -->
+                <div class="w-52 h-52 mx-auto bg-slate-50 border-4 border-amber-200 rounded-2xl flex items-center justify-center overflow-hidden p-2">
+                    <img id="l1-image" src="" alt="Question Image" class="object-contain max-h-full max-w-full hidden" onerror="handleImgError(this)">
+                    <span id="l1-image-placeholder" class="text-6xl">🥥</span>
+                </div>
+
+                <!-- MCQ Options (All small letters) -->
+                <div id="l1-options" class="grid grid-cols-1 md:grid-cols-3 gap-3 max-w-xl mx-auto pt-2">
+                    <!-- Dynamic Buttons -->
+                </div>
+            </div>
+
+            <div id="l1-feedback" class="hidden p-4 rounded-2xl text-center font-bold"></div>
+        </section>
+
+        <!-- VIEW: GAMEPLAY (LEVEL 2 CATEGORIZATION) -->
+        <section id="view-game-l2" class="hidden pastel-card p-6 md:p-8 space-y-6">
+            <div class="flex justify-between items-center border-b-2 border-amber-100 pb-3">
+                <span class="font-fun text-lg text-amber-600">Level 2: Fruit or Vegetable?</span>
+                <span id="l2-progress" class="font-bold text-slate-500">Item 1/10</span>
+            </div>
+
+            <div class="text-center space-y-4">
+                <p class="text-slate-500 font-bold">Classify the given item correctly into fruit or vegetable:</p>
+                <div class="p-4 bg-amber-50 rounded-2xl border-2 border-amber-200 inline-block">
+                    <h3 id="l2-word" class="text-3xl font-fun text-indigo-600 lowercase">item</h3>
+                </div>
+
+                <div class="flex justify-center gap-6 pt-4">
+                    <button onclick="submitL2Answer('fruit')" class="pastel-btn bg-pink-200 border-pink-400 px-8 py-4 text-xl font-fun flex flex-col items-center gap-1 lowercase">
+                        <span>🍎</span> fruit
+                    </button>
+                    <button onclick="submitL2Answer('vegetable')" class="pastel-btn pastel-btn-green px-8 py-4 text-xl font-fun flex flex-col items-center gap-1 lowercase">
+                        <span>🥦</span> vegetable
+                    </button>
+                </div>
+            </div>
+
+            <div id="l2-feedback" class="hidden p-4 rounded-2xl text-center font-bold"></div>
+        </section>
+
+        <!-- VIEW: GAMEPLAY (LEVEL 3 UNSCRAMBLE) -->
+        <section id="view-game-l3" class="hidden pastel-card p-6 md:p-8 space-y-6">
+            <div class="flex justify-between items-center border-b-2 border-amber-100 pb-3">
+                <span class="font-fun text-lg text-amber-600">Level 3: Letter Unscramble</span>
+                <span id="l3-progress" class="font-bold text-slate-500">Word 1/10</span>
+            </div>
+
+            <div class="text-center space-y-4">
+                <p class="text-slate-500 font-bold">Unscramble the small letters to spell the correct food word!</p>
+                
+                <div class="w-36 h-36 mx-auto bg-slate-50 border-4 border-amber-200 rounded-2xl flex items-center justify-center overflow-hidden p-2">
+                    <img id="l3-image" src="" alt="Word Image" class="object-contain max-h-full max-w-full hidden" onerror="handleImgError(this)">
+                    <span id="l3-placeholder" class="text-5xl">📷</span>
+                </div>
+
+                <!-- Answer Slots -->
+                <div id="l3-slots" class="flex justify-center gap-2 flex-wrap min-h-[56px]"></div>
+
+                <!-- Letter Bank -->
+                <div id="l3-tiles" class="flex justify-center gap-2 flex-wrap pt-4"></div>
+
+                <div>
+                    <button onclick="clearL3Slots()" class="text-xs text-red-500 underline font-bold">Clear Answer</button>
+                </div>
+            </div>
+
+            <div id="l3-feedback" class="hidden p-4 rounded-2xl text-center font-bold"></div>
+        </section>
+
+        <!-- VIEW: INSTRUCTIONS -->
+        <section id="view-instructions" class="hidden pastel-card p-6 md:p-8 space-y-4">
+            <h2 class="text-2xl font-fun text-indigo-600">📜 How to Play</h2>
+            <ul class="list-disc list-inside space-y-2 text-slate-600 font-semibold">
+                <li><strong class="text-green-600">Level 1:</strong> Identify food items from pictures. Choose the correct answer option formatted in small letters.</li>
+                <li><strong class="text-blue-600">Level 2:</strong> Categorize items as <span class="text-pink-500 font-bold">fruit</span> or <span class="text-green-600 font-bold">vegetable</span>. Note: tomato is scientifically classified as a fruit!</li>
+                <li><strong class="text-purple-600">Level 3:</strong> Tap the scrambled small letter tiles in the correct order to spell out the target food word.</li>
+            </ul>
+            <button onclick="showView('view-home')" class="pastel-btn bg-slate-200 border-slate-300 px-6 py-2 font-bold mt-4">⬅️ Back to Menu</button>
+        </section>
+
+        <!-- VIEW: LEADERBOARD -->
+        <section id="view-leaderboard" class="hidden pastel-card p-6 md:p-8 space-y-4">
+            <h2 class="text-2xl font-fun text-purple-600 text-center">🏆 Classroom Leaderboard</h2>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b-2 border-purple-200 text-purple-800">
+                            <th class="p-2">Rank</th>
+                            <th class="p-2">Pupil Name</th>
+                            <th class="p-2">Score</th>
+                            <th class="p-2">Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body" class="font-semibold text-slate-700">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center pt-4">
+                <button onclick="showView('view-home')" class="pastel-btn bg-slate-200 border-slate-300 px-6 py-2 font-bold">⬅️ Back to Menu</button>
+            </div>
+        </section>
+
+        <!-- VIEW: TEACHER DASHBOARD (PIN: 1234) -->
+        <section id="view-dashboard" class="hidden pastel-card p-6 md:p-8 space-y-6">
+            <div class="flex justify-between items-center border-b-2 border-indigo-100 pb-3">
+                <h2 class="text-2xl font-fun text-indigo-600">🔒 Teacher Dashboard</h2>
+                <button onclick="showView('view-home')" class="pastel-btn bg-red-100 border-red-300 px-4 py-1 text-sm font-bold">Exit Dashboard</button>
+            </div>
+
+            <!-- Configuration -->
+            <div class="bg-indigo-50 p-4 rounded-2xl space-y-3">
+                <h3 class="font-fun text-indigo-700">Game Information Settings</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs font-bold text-slate-500">Game Title</label>
+                        <input type="text" id="cfg-title" class="w-full p-2 rounded-xl border border-indigo-200 font-bold">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-500">Subject</label>
+                        <input type="text" id="cfg-subject" class="w-full p-2 rounded-xl border border-indigo-200 font-bold">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-500">Standard / Year</label>
+                        <input type="text" id="cfg-standard" class="w-full p-2 rounded-xl border border-indigo-200 font-bold">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-500">Topic</label>
+                        <input type="text" id="cfg-topic" class="w-full p-2 rounded-xl border border-indigo-200 font-bold">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-500">Teacher's Name</label>
+                        <input type="text" id="cfg-teacher" class="w-full p-2 rounded-xl border border-indigo-200 font-bold">
+                    </div>
+                </div>
+                <button onclick="saveGeneralConfig()" class="pastel-btn pastel-btn-green px-4 py-2 text-sm font-bold mt-2">Save Game Info</button>
+            </div>
+
+            <!-- Management Tools -->
+            <div class="flex flex-wrap gap-2 pt-2">
+                <button onclick="exportJSON()" class="pastel-btn bg-emerald-100 border-emerald-300 px-3 py-2 text-xs font-bold">💾 Export Game File (JSON)</button>
+                <label class="pastel-btn bg-sky-100 border-sky-300 px-3 py-2 text-xs font-bold cursor-pointer">
+                    📂 Import Game File (JSON)
+                    <input type="file" id="import-file" accept=".json" class="hidden" onchange="importJSON(event)">
+                </label>
+                <button onclick="exportCSV()" class="pastel-btn bg-amber-100 border-amber-300 px-3 py-2 text-xs font-bold">📊 Export Scores (CSV)</button>
+                <button onclick="resetLeaderboard()" class="pastel-btn bg-red-100 border-red-300 px-3 py-2 text-xs font-bold">🗑️ Reset Leaderboard</button>
+            </div>
+
+            <!-- Level 1 Questions Editor -->
+            <div class="space-y-4">
+                <h3 class="font-fun text-xl text-indigo-700">Level 1 Questions & Dual Image Editor</h3>
+                <div id="editor-l1-container" class="space-y-4">
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center text-xs text-slate-400 my-4 font-semibold">
+        Interactive Primary Learning Engine
+    </footer>
+
+    <!-- JAVASCRIPT ENGINE -->
+    <script>
+        // Grammar & Plurality Accurate Imagery Setup (Wikimedia SVG Vector Assets)
+        const DEFAULT_APP_DATA = {
+            title: "FOOD AND VEGETABLES",
+            subject: "ENGLISH",
+            standard: "YEAR 1",
+            topic: "LUNCHTIME",
+            teacher: "MISS HII",
+            level1: [
+                { id: 1, text: "What is this?", image: "https://upload.wikimedia.org/wikipedia/commons/f/f1/Coconut_Clipart.svg", options: ["coconut", "orange", "potato"], answer: "coconut", emoji: "🥥" },
+                { id: 2, text: "What is this?", image: "https://upload.wikimedia.org/wikipedia/commons/2/29/Strawberry_clpart_art_vector.svg", options: ["strawberry", "pineapple", "tomato"], answer: "strawberry", emoji: "🍓" },
+                { id: 3, text: "What is this?", image: "https://upload.wikimedia.org/wikipedia/commons/0/05/Cabbage_Clipart_Vector.svg", options: ["onion", "cabbage", "oranges"], answer: "cabbage", emoji: "🥬" },
+                { id: 4, text: "What is this?", image: "https://upload.wikimedia.org/wikipedia/commons/8/87/Broccoli_Clipart.svg", options: ["strawberry", "green bean", "broccoli"], answer: "broccoli", emoji: "🥦" },
+                { id: 5, text: "What is this?", image: "https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.svg", options: ["coconut", "tomato", "potato"], answer: "tomato", emoji: "🍅" },
+                { id: 6, text: "What is this?", image: "https://upload.wikimedia.org/wikipedia/commons/8/8b/Red_Onion_Clipart.svg", options: ["broccoli", "pineapple", "onion"], answer: "onion", emoji: "🧅" },
+                { id: 7, text: "What is this?", image: "https://upload.wikimedia.org/wikipedia/commons/a/ab/Potato_Clipart.svg", options: ["orange", "cabbage", "potato"], answer: "potato", emoji: "🥔" },
+                { id: 8, text: "What is this?", image: "https://upload.wikimedia.org/wikipedia/commons/c/cb/Pineapple_Vector.svg", options: ["pineapple", "strawberry", "coconut"], answer: "pineapple", emoji: "🍍" },
+                { id: 9, text: "What are these?", image: "https://upload.wikimedia.org/wikipedia/commons/d/df/Green_Beans_Clipart.svg", options: ["tomato", "green beans", "broccoli"], answer: "green beans", emoji: "🫛" },
+                { id: 10, text: "What are these?", image: "https://upload.wikimedia.org/wikipedia/commons/c/c4/Orange-Fruit-Pieces.svg", options: ["potato", "oranges", "cabbage"], answer: "oranges", emoji: "🍊" }
+            ],
+            level2: [
+                { word: "coconuts", type: "fruit" },
+                { word: "pineapples", type: "fruit" },
+                { word: "oranges", type: "fruit" },
+                { word: "strawberries", type: "fruit" },
+                { word: "tomatoes", type: "fruit" }, // Correctly classified as a fruit
+                { word: "broccoli", type: "vegetable" },
+                { word: "potatoes", type: "vegetable" },
+                { word: "onions", type: "vegetable" },
+                { word: "green beans", type: "vegetable" },
+                { word: "cabbages", type: "vegetable" }
+            ],
+            level3: [
+                { word: "coconut", image: "https://upload.wikimedia.org/wikipedia/commons/f/f1/Coconut_Clipart.svg", emoji: "🥥" },
+                { word: "strawberry", image: "https://upload.wikimedia.org/wikipedia/commons/2/29/Strawberry_clpart_art_vector.svg", emoji: "🍓" },
+                { word: "cabbage", image: "https://upload.wikimedia.org/wikipedia/commons/0/05/Cabbage_Clipart_Vector.svg", emoji: "🥬" },
+                { word: "broccoli", image: "https://upload.wikimedia.org/wikipedia/commons/8/87/Broccoli_Clipart.svg", emoji: "🥦" },
+                { word: "tomato", image: "https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.svg", emoji: "🍅" },
+                { word: "onion", image: "https://upload.wikimedia.org/wikipedia/commons/8/8b/Red_Onion_Clipart.svg", emoji: "🧅" },
+                { word: "potato", image: "https://upload.wikimedia.org/wikipedia/commons/a/ab/Potato_Clipart.svg", emoji: "🥔" },
+                { word: "pineapple", image: "https://upload.wikimedia.org/wikipedia/commons/c/cb/Pineapple_Vector.svg", emoji: "🍍" },
+                { word: "orange", image: "https://upload.wikimedia.org/wikipedia/commons/c/c4/Orange-Fruit-Pieces.svg", emoji: "🍊" },
+                { word: "beans", image: "https://upload.wikimedia.org/wikipedia/commons/d/df/Green_Beans_Clipart.svg", emoji: "🫛" }
+            ]
+        };
+
+        let appData = JSON.parse(JSON.stringify(DEFAULT_APP_DATA));
+        let pupilProgress = {
+            name: "",
+            score: 0,
+            unlockedLevel: 1,
+            startTime: null,
+            totalTimeSeconds: 0
+        };
+
+        let currentLevel = 1;
+        let currentQuestionIndex = 0;
+        let l3CurrentAnswer = [];
+
+        // Web Audio Synthesizer (Zero External Dependencies)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playTone(freq, duration, type = 'sine') {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e){}
+        }
+
+        function playSound(isCorrect) {
+            if (isCorrect) {
+                playTone(523.25, 0.1);
+                setTimeout(() => playTone(659.25, 0.15), 100);
+            } else {
+                playTone(220, 0.2, 'sawtooth');
+            }
+        }
+
+        function handleImgError(imgEl) {
+            imgEl.classList.add('hidden');
+            const placeholder = imgEl.nextElementSibling;
+            if (placeholder) placeholder.classList.remove('hidden');
+        }
+
+        // Initialize and Enforce Small Letters Rule
+        window.addEventListener('DOMContentLoaded', () => {
+            loadPersistentData();
+            normalizeDataToLowercase();
+            updateUIHeader();
+        });
+
+        function normalizeDataToLowercase() {
+            if (appData.level1) {
+                appData.level1.forEach(q => {
+                    if (q.options) q.options = q.options.map(opt => opt.toLowerCase());
+                    if (q.answer) q.answer = q.answer.toLowerCase();
+                });
+            }
+            if (appData.level2) {
+                appData.level2.forEach(item => {
+                    if (item.word) item.word = item.word.toLowerCase();
+                    if (item.type) item.type = item.type.toLowerCase();
+                });
+            }
+            if (appData.level3) {
+                appData.level3.forEach(item => {
+                    if (item.word) item.word = item.word.toLowerCase();
+                });
+            }
+        }
+
+        function loadPersistentData() {
+            const saved = localStorage.getItem('food_game_appData');
+            if (saved) {
+                try {
+                    appData = JSON.parse(saved);
+                } catch(e) {
+                    console.error("Failed to parse saved data", e);
+                }
+            }
+            updateUIHeader();
+        }
+
+        function savePersistentData() {
+            localStorage.setItem('food_game_appData', JSON.stringify(appData));
+            updateUIHeader();
+        }
+
+        function updateUIHeader() {
+            document.getElementById('app-title').innerText = appData.title || "FOOD AND VEGETABLES";
+            document.getElementById('app-subject').innerText = appData.subject || "ENGLISH";
+            document.getElementById('app-standard').innerText = appData.standard || "YEAR 1";
+            document.getElementById('app-topic').innerText = appData.topic || "LUNCHTIME";
+            document.getElementById('app-teacher').innerText = appData.teacher || "MISS HII";
+        }
+
+        function showView(viewId) {
+            const views = ['view-home', 'view-levels', 'view-game-l1', 'view-game-l2', 'view-game-l3', 'view-instructions', 'view-leaderboard', 'view-dashboard'];
+            views.forEach(v => document.getElementById(v).classList.add('hidden'));
+            document.getElementById(viewId).classList.remove('hidden');
+        }
+
+        function showInstructions() { showView('view-instructions'); }
+
+        function startGame() {
+            const name = document.getElementById('pupil-name').value.trim();
+            if (!name) {
+                alert("Please enter your name to start the game!");
+                return;
+            }
+            pupilProgress.name = name;
+            pupilProgress.score = 0;
+            pupilProgress.startTime = Date.now();
+            updateLevelUnlocks();
+            showView('view-levels');
+        }
+
+        function updateLevelUnlocks() {
+            const btn2 = document.getElementById('btn-lvl-2');
+            const card2 = document.getElementById('card-lvl-2');
+            const btn3 = document.getElementById('btn-lvl-3');
+            const card3 = document.getElementById('card-lvl-3');
+
+            if (pupilProgress.unlockedLevel >= 2) {
+                btn2.disabled = false;
+                btn2.innerText = "Play Level 2";
+                card2.classList.remove('opacity-50');
+            }
+            if (pupilProgress.unlockedLevel >= 3) {
+                btn3.disabled = false;
+                btn3.innerText = "Play Level 3";
+                card3.classList.remove('opacity-50');
+            }
+        }
+
+        function loadLevel(lvl) {
+            currentLevel = lvl;
+            currentQuestionIndex = 0;
+            if (lvl === 1) {
+                showView('view-game-l1');
+                renderL1Question();
+            } else if (lvl === 2) {
+                showView('view-game-l2');
+                appData.level2.sort(() => Math.random() - 0.5);
+                renderL2Question();
+            } else if (lvl === 3) {
+                showView('view-game-l3');
+                renderL3Question();
+            }
+        }
+
+        // ==========================================
+        // LEVEL 1 GAME LOGIC (STRICT SMALL LETTERS)
+        // ==========================================
+        function renderL1Question() {
+            const q = appData.level1[currentQuestionIndex];
+            document.getElementById('l1-progress').innerText = `Q ${currentQuestionIndex + 1}/10`;
+            document.getElementById('l1-question-text').innerText = q.text;
+            
+            const imgEl = document.getElementById('l1-image');
+            const placeholder = document.getElementById('l1-image-placeholder');
+            
+            if (q.emoji) placeholder.innerText = q.emoji;
+
+            if (q.image) {
+                imgEl.src = q.image;
+                imgEl.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            } else {
+                imgEl.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+            }
+
+            const optionsContainer = document.getElementById('l1-options');
+            optionsContainer.innerHTML = '';
+            document.getElementById('l1-feedback').classList.add('hidden');
+
+            q.options.forEach(opt => {
+                const lowerOpt = opt.toLowerCase();
+                const btn = document.createElement('button');
+                btn.className = "pastel-btn bg-amber-100 border-amber-300 py-3 text-lg font-bold lowercase hover:bg-amber-200";
+                btn.innerText = lowerOpt;
+                btn.onclick = () => submitL1Answer(lowerOpt);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function submitL1Answer(selectedOpt) {
+            const q = appData.level1[currentQuestionIndex];
+            const feedback = document.getElementById('l1-feedback');
+            feedback.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700');
+
+            if (selectedOpt.toLowerCase() === q.answer.toLowerCase()) {
+                playSound(true);
+                pupilProgress.score += 1;
+                feedback.classList.add('bg-green-100', 'text-green-700');
+                feedback.innerText = "🌟 Great job! Correct!";
+            } else {
+                playSound(false);
+                feedback.classList.add('bg-red-100', 'text-red-700');
+                feedback.innerText = `💡 Oops! The correct answer is: ${q.answer.toLowerCase()}`;
+            }
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < appData.level1.length) {
+                    renderL1Question();
+                } else {
+                    pupilProgress.unlockedLevel = Math.max(pupilProgress.unlockedLevel, 2);
+                    alert("🎉 Level 1 completed! Level 2 is now unlocked!");
+                    updateLevelUnlocks();
+                    showView('view-levels');
+                }
+            }, 1200);
+        }
+
+        // ==========================================
+        // LEVEL 2 GAME LOGIC (STRICT SMALL LETTERS)
+        // ==========================================
+        function renderL2Question() {
+            const item = appData.level2[currentQuestionIndex];
+            document.getElementById('l2-progress').innerText = `Item ${currentQuestionIndex + 1}/10`;
+            document.getElementById('l2-word').innerText = item.word.toLowerCase();
+            document.getElementById('l2-feedback').classList.add('hidden');
+        }
+
+        function submitL2Answer(type) {
+            const item = appData.level2[currentQuestionIndex];
+            const feedback = document.getElementById('l2-feedback');
+            feedback.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700');
+
+            if (type.toLowerCase() === item.type.toLowerCase()) {
+                playSound(true);
+                pupilProgress.score += 1;
+                feedback.classList.add('bg-green-100', 'text-green-700');
+                feedback.innerText = `🌟 Correct! ${item.word.toLowerCase()} is a ${item.type.toLowerCase()}!`;
+            } else {
+                playSound(false);
+                feedback.classList.add('bg-red-100', 'text-red-700');
+                feedback.innerText = `💡 Note: ${item.word.toLowerCase()} is actually a ${item.type.toLowerCase()}!`;
+            }
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < appData.level2.length) {
+                    renderL2Question();
+                } else {
+                    pupilProgress.unlockedLevel = Math.max(pupilProgress.unlockedLevel, 3);
+                    alert("🎉 Level 2 completed! Level 3 is now unlocked!");
+                    updateLevelUnlocks();
+                    showView('view-levels');
+                }
+            }, 1200);
+        }
+
+        // ==========================================
+        // LEVEL 3 GAME LOGIC (SMALL LETTER UNSCRAMBLE)
+        // ==========================================
+        function renderL3Question() {
+            const item = appData.level3[currentQuestionIndex];
+            document.getElementById('l3-progress').innerText = `Word ${currentQuestionIndex + 1}/10`;
+            
+            const imgEl = document.getElementById('l3-image');
+            const placeholder = document.getElementById('l3-placeholder');
+            if (item.emoji) placeholder.innerText = item.emoji;
+
+            if (item.image) {
+                imgEl.src = item.image;
+                imgEl.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            } else {
+                imgEl.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+            }
+
+            l3CurrentAnswer = [];
+            document.getElementById('l3-feedback').classList.add('hidden');
+
+            const slotsContainer = document.getElementById('l3-slots');
+            slotsContainer.innerHTML = '';
+            for (let i = 0; i < item.word.length; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'tile-slot';
+                slot.id = `l3-slot-${i}`;
+                slotsContainer.appendChild(slot);
+            }
+
+            const tilesContainer = document.getElementById('l3-tiles');
+            tilesContainer.innerHTML = '';
+            const scrambled = item.word.toLowerCase().split('').sort(() => Math.random() - 0.5);
+
+            scrambled.forEach((char) => {
+                const tile = document.createElement('div');
+                tile.className = 'letter-tile lowercase';
+                tile.innerText = char;
+                tile.onclick = () => selectL3Letter(tile, char);
+                tilesContainer.appendChild(tile);
+            });
+        }
+
+        function selectL3Letter(tileEl, char) {
+            const targetWord = appData.level3[currentQuestionIndex].word;
+            if (l3CurrentAnswer.length < targetWord.length && !tileEl.classList.contains('opacity-30')) {
+                l3CurrentAnswer.push(char);
+                tileEl.classList.add('opacity-30', 'pointer-events-none');
+
+                const slotIndex = l3CurrentAnswer.length - 1;
+                document.getElementById(`l3-slot-${slotIndex}`).innerText = char;
+
+                if (l3CurrentAnswer.length === targetWord.length) {
+                    checkL3Answer();
+                }
+            }
+        }
+
+        function clearL3Slots() {
+            l3CurrentAnswer = [];
+            const item = appData.level3[currentQuestionIndex];
+            for (let i = 0; i < item.word.length; i++) {
+                document.getElementById(`l3-slot-${i}`).innerText = '';
+            }
+            const tiles = document.querySelectorAll('#l3-tiles .letter-tile');
+            tiles.forEach(t => t.classList.remove('opacity-30', 'pointer-events-none'));
+        }
+
+        function checkL3Answer() {
+            const item = appData.level3[currentQuestionIndex];
+            const userWord = l3CurrentAnswer.join('').toLowerCase();
+            const feedback = document.getElementById('l3-feedback');
+            feedback.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700');
+
+            if (userWord === item.word.toLowerCase()) {
+                playSound(true);
+                pupilProgress.score += 1;
+                feedback.classList.add('bg-green-100', 'text-green-700');
+                feedback.innerText = "🌟 Fantastic spelling!";
+            } else {
+                playSound(false);
+                feedback.classList.add('bg-red-100', 'text-red-700');
+                feedback.innerText = `💡 The correct spelling is: ${item.word.toLowerCase()}`;
+            }
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < appData.level3.length) {
+                    renderL3Question();
+                } else {
+                    finishFullGame();
+                }
+            }, 1200);
+        }
+
+        function finishFullGame() {
+            pupilProgress.totalTimeSeconds = Math.round((Date.now() - pupilProgress.startTime) / 1000);
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            
+            saveLeaderboardEntry(pupilProgress.name, pupilProgress.score, pupilProgress.totalTimeSeconds);
+            alert(`🎉 Congratulations ${pupilProgress.name}!\nYou scored ${pupilProgress.score} points in ${pupilProgress.totalTimeSeconds} seconds!`);
+            showLeaderboard();
+        }
+
+        function saveLeaderboardEntry(name, score, time) {
+            let leaderboard = JSON.parse(localStorage.getItem('food_game_leaderboard') || '[]');
+            leaderboard.push({ name, score, time, date: new Date().toLocaleDateString() });
+            leaderboard.sort((a, b) => b.score - a.score || a.time - b.time);
+            localStorage.setItem('food_game_leaderboard', JSON.stringify(leaderboard));
+        }
+
+        function showLeaderboard() {
+            const leaderboard = JSON.parse(localStorage.getItem('food_game_leaderboard') || '[]');
+            const tbody = document.getElementById('leaderboard-body');
+            tbody.innerHTML = '';
+
+            if (leaderboard.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">No scores recorded yet. Be the first to play!</td></tr>`;
+            } else {
+                leaderboard.slice(0, 10).forEach((entry, idx) => {
+                    let badge = `${idx + 1}`;
+                    if (idx === 0) badge = '🥇 1st';
+                    if (idx === 1) badge = '🥈 2nd';
+                    if (idx === 2) badge = '🥉 3rd';
+
+                    const row = document.createElement('tr');
+                    row.className = 'border-b border-purple-100 hover:bg-purple-50';
+                    row.innerHTML = `
+                        <td class="p-2 font-bold text-purple-700">${badge}</td>
+                        <td class="p-2 font-bold">${entry.name}</td>
+                        <td class="p-2 text-green-600 font-bold">${entry.score} pts</td>
+                        <td class="p-2 text-slate-500">${entry.time}s</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+            showView('view-leaderboard');
+        }
+
+        function resetLeaderboard() {
+            if (confirm("Are you sure you want to clear the classroom leaderboard?")) {
+                localStorage.removeItem('food_game_leaderboard');
+                showLeaderboard();
+            }
+        }
+
+        // ==========================================
+        // TEACHER DASHBOARD (PIN: 1234)
+        // ==========================================
+        function promptTeacherPIN() {
+            const pin = prompt("Enter Teacher PIN Code:", "");
+            if (pin === "1234") {
+                openTeacherDashboard();
+            } else if (pin !== null) {
+                alert("Incorrect PIN Code!");
+            }
+        }
+
+        function openTeacherDashboard() {
+            document.getElementById('cfg-title').value = appData.title;
+            document.getElementById('cfg-subject').value = appData.subject;
+            document.getElementById('cfg-standard').value = appData.standard;
+            document.getElementById('cfg-topic').value = appData.topic;
+            document.getElementById('cfg-teacher').value = appData.teacher;
+
+            renderDashboardEditors();
+            showView('view-dashboard');
+        }
+
+        function saveGeneralConfig() {
+            appData.title = document.getElementById('cfg-title').value;
+            appData.subject = document.getElementById('cfg-subject').value;
+            appData.standard = document.getElementById('cfg-standard').value;
+            appData.topic = document.getElementById('cfg-topic').value;
+            appData.teacher = document.getElementById('cfg-teacher').value;
+
+            savePersistentData();
+            alert("Game information updated successfully!");
+        }
+
+        function renderDashboardEditors() {
+            const container = document.getElementById('editor-l1-container');
+            container.innerHTML = '';
+
+            appData.level1.forEach((q, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-2xl border-2 border-slate-200 space-y-3";
+                card.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="font-fun text-indigo-600">Question ${index + 1} Slot</span>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold text-slate-500">Question Text</label>
+                        <input type="text" value="${q.text}" onchange="updateL1Text(${index}, this.value)" class="w-full p-2 rounded-xl border border-slate-300 text-sm font-bold">
+                    </div>
+
+                    <!-- DUAL-METHOD IMAGE EDITOR -->
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+                        <label class="text-xs font-bold text-slate-600 block">Question Image (URL Link or Local File Upload)</label>
+                        
+                        <div class="flex flex-col md:flex-row items-center gap-3">
+                            <div class="w-20 h-20 bg-slate-200 border border-slate-300 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
+                                <img id="preview-l1-${index}" src="${q.image || ''}" class="${q.image ? '' : 'hidden'} object-contain max-h-full max-w-full" onerror="handleImgError(this)">
+                                <span id="preview-placeholder-l1-${index}" class="${q.image ? 'hidden' : ''} text-xs text-slate-400">No Image</span>
+                            </div>
+
+                            <div class="space-y-2 w-full">
+                                <input type="text" placeholder="Option A: Direct Image Link (https://...)" value="${q.image || ''}" onchange="updateL1ImageURL(${index}, this.value)" class="w-full p-2 rounded-lg border border-slate-300 text-xs">
+                                
+                                <div class="flex gap-2">
+                                    <input type="file" accept="image/*" onchange="handleL1FileUpload(event, ${index})" class="text-xs text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                                    <button onclick="clearL1Image(${index})" class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-md font-bold">Clear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MCQ Options (Forced Small Letters) -->
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <label class="text-xs font-bold text-slate-500">Option A (Small letters)</label>
+                            <input type="text" value="${q.options[0].toLowerCase()}" onchange="updateL1Option(${index}, 0, this.value)" class="w-full p-1 rounded-lg border border-slate-300 text-xs font-semibold lowercase">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-500">Option B (Small letters)</label>
+                            <input type="text" value="${q.options[1].toLowerCase()}" onchange="updateL1Option(${index}, 1, this.value)" class="w-full p-1 rounded-lg border border-slate-300 text-xs font-semibold lowercase">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-500">Option C (Small letters)</label>
+                            <input type="text" value="${q.options[2].toLowerCase()}" onchange="updateL1Option(${index}, 2, this.value)" class="w-full p-1 rounded-lg border border-slate-300 text-xs font-semibold lowercase">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold text-slate-500">Correct Answer</label>
+                        <select onchange="updateL1Answer(${index}, this.value)" class="w-full p-2 rounded-xl border border-slate-300 text-xs font-bold lowercase">
+                            <option value="${q.options[0].toLowerCase()}" ${q.answer.toLowerCase() === q.options[0].toLowerCase() ? 'selected' : ''}>${q.options[0].toLowerCase()}</option>
+                            <option value="${q.options[1].toLowerCase()}" ${q.answer.toLowerCase() === q.options[1].toLowerCase() ? 'selected' : ''}>${q.options[1].toLowerCase()}</option>
+                            <option value="${q.options[2].toLowerCase()}" ${q.answer.toLowerCase() === q.options[2].toLowerCase() ? 'selected' : ''}>${q.options[2].toLowerCase()}</option>
+                        </select>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function updateL1Text(idx, val) {
+            appData.level1[idx].text = val;
+            savePersistentData();
+        }
+
+        function updateL1ImageURL(idx, url) {
+            appData.level1[idx].image = url;
+            savePersistentData();
+            refreshImagePreview(idx, url);
+        }
+
+        function handleL1FileUpload(event, idx) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Data = e.target.result;
+                    appData.level1[idx].image = base64Data;
+                    savePersistentData();
+                    refreshImagePreview(idx, base64Data);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function clearL1Image(idx) {
+            appData.level1[idx].image = "";
+            savePersistentData();
+            refreshImagePreview(idx, "");
+        }
+
+        function refreshImagePreview(idx, src) {
+            const img = document.getElementById(`preview-l1-${idx}`);
+            const placeholder = document.getElementById(`preview-placeholder-l1-${idx}`);
+            if (src) {
+                img.src = src;
+                img.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            } else {
+                img.src = "";
+                img.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+            }
+        }
+
+        function updateL1Option(qIdx, optIdx, val) {
+            appData.level1[qIdx].options[optIdx] = val.toLowerCase();
+            savePersistentData();
+            renderDashboardEditors();
+        }
+
+        function updateL1Answer(qIdx, val) {
+            appData.level1[qIdx].answer = val.toLowerCase();
+            savePersistentData();
+        }
+
+        function exportJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `food_game_backup_${Date.now()}.json`);
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+        }
+
+        function importJSON(event) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    appData = imported;
+                    normalizeDataToLowercase();
+                    savePersistentData();
+                    openTeacherDashboard();
+                    alert("Game data imported successfully!");
+                } catch(err) {
+                    alert("Invalid JSON file format!");
+                }
+            };
+            reader.readAsText(event.target.files[0]);
+        }
+
+        function exportCSV() {
+            const leaderboard = JSON.parse(localStorage.getItem('food_game_leaderboard') || '[]');
+            let csv = "Pupil Name,Score,Time (seconds),Date\n";
+            leaderboard.forEach(r => {
+                csv += `"${r.name}",${r.score},${r.time},"${r.date}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', `classroom_leaderboard_${Date.now()}.csv`);
+            a.click();
+        }
+    </script>
+</body>
+</html>
