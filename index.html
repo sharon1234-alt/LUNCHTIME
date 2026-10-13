@@ -1,995 +1,1089 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FOOD AND VEGETABLES - Primary Learning Game</title>
-
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Canvas Confetti Library -->
+    <title>单元十九 热闹的夜市 - 森林跑酷学习乐园</title>
+    <!-- Google Fonts & Canvas Confetti -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
-
     <style>
-        body {
-            font-family: 'Quicksand', sans-serif;
-            background-color: #fdf6e3;
-        }
-        h1, h2, h3, .font-fun {
-            font-family: 'Fredoka One', cursive;
-        }
-        .pastel-card {
-            background: #ffffff;
-            border: 4px solid #f3d5b5;
-            box-shadow: 0 8px 0 #e7bc91;
-            border-radius: 24px;
-        }
-        .pastel-btn {
-            background-color: #ffb4a2;
-            border: 3px solid #e5989b;
-            box-shadow: 0 5px 0 #b5828c;
-            border-radius: 16px;
-            transition: all 0.1s ease;
-        }
-        .pastel-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 7px 0 #b5828c;
-        }
-        .pastel-btn:active {
-            transform: translateY(3px);
-            box-shadow: 0 2px 0 #b5828c;
-        }
-        .pastel-btn-green {
-            background-color: #b7e4c7;
-            border-color: #74c69d;
-            box-shadow: 0 5px 0 #52b788;
-        }
-        .pastel-btn-green:hover { box-shadow: 0 7px 0 #52b788; }
-        .pastel-btn-green:active { box-shadow: 0 2px 0 #52b788; }
-
-        .pastel-btn-blue {
-            background-color: #a2d2ff;
-            border-color: #bde0fe;
-            box-shadow: 0 5px 0 #8eecf5;
+        :root {
+            --bg-color: #F0F7F4;
+            --primary: #4CAF50;
+            --secondary: #81C784;
+            --accent: #A5D6A7;
+            --mint: #C8E6C9;
+            --sky: #E8F5E9;
+            --purple: #B39DDB;
+            --dark-text: #2E4033;
+            --white: #FFFFFF;
+            --shadow: 0 8px 20px rgba(76, 175, 80, 0.2);
+            --radius: 24px;
         }
 
-        .tile-slot {
-            width: 48px;
-            height: 48px;
-            border: 3px dashed #b5828c;
-            border-radius: 12px;
-            display: inline-flex;
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans SC', 'Fredoka One', sans-serif; user-select: none; }
+        body { background-color: var(--bg-color); color: var(--dark-text); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+        
+        .screen { display: none; padding: 15px; max-width: 900px; margin: 0 auto; width: 100%; animation: fadeIn 0.3s ease-in-out; }
+        .screen.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { background: var(--white); border-radius: var(--radius); padding: 25px; box-shadow: var(--shadow); border: 4px solid #C8E6C9; margin-bottom: 20px; position: relative; }
+        .btn { background: var(--primary); color: white; border: none; padding: 14px 28px; border-radius: 50px; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 6px 0 #388E3C; margin: 5px; }
+        .btn:hover { transform: translateY(-3px); filter: brightness(1.05); }
+        .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #388E3C; }
+        .btn-secondary { background: #FFB74D; color: #5D4037; box-shadow: 0 6px 0 #F57C00; }
+        .btn-purple { background: #B39DDB; color: white; box-shadow: 0 6px 0 #8E24AA; }
+        .btn-warning { background: #81C784; color: white; box-shadow: 0 6px 0 #4CAF50; }
+        .btn-danger { background: #E57373; color: white; box-shadow: 0 6px 0 #D32F2F; }
+        .btn-jump { background: #FF7043; color: white; box-shadow: 0 6px 0 #D84315; font-size: 1.5rem; padding: 18px 40px; border-radius: 30px; width: 100%; margin-top: 10px; }
+
+        .badge { background: var(--accent); padding: 6px 16px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; color: #1B5E20; display: inline-block; }
+        
+        h1 { font-size: 2.2rem; color: #2E7D32; text-align: center; margin-bottom: 10px; text-shadow: 2px 2px 0px #FFF; }
+        h2 { font-size: 1.5rem; color: var(--dark-text); margin-bottom: 15px; }
+        .subtitle { text-align: center; color: #667C6B; font-size: 1.1rem; margin-bottom: 20px; }
+
+        input[type="text"], input[type="password"], select {
+            width: 100%; padding: 12px 18px; border: 3px solid var(--accent); border-radius: 16px; font-size: 1rem; outline: none; transition: 0.2s; background: #FFFDF9; margin-top: 6px; margin-bottom: 12px;
+        }
+
+        /* 2D Canvas Forest Area */
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: 320px;
+            background: linear-gradient(to bottom, #132a13, #31572c, #4f772d);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 4px solid #4CAF50;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+        }
+        canvas { display: block; width: 100%; height: 100%; }
+
+        /* HUD Overlay */
+        .hud-overlay {
+            position: absolute;
+            top: 12px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: bold;
-            background-color: #fff;
-            text-transform: lowercase;
+            z-index: 10;
+            pointer-events: none;
         }
-        .letter-tile {
-            width: 48px;
-            height: 48px;
-            background-color: #ffcdb2;
-            border: 2px solid #e5989b;
-            border-radius: 12px;
-            display: inline-flex;
+        .hud-box {
+            background: rgba(255, 255, 255, 0.92);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #2E4033;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        /* Quiz Overlay Popup */
+        #quiz-modal {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            padding: 15px;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 0 #b5828c;
-            user-select: none;
-            text-transform: lowercase;
         }
-        .letter-tile:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #b5828c;
+        #quiz-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+            border: 4px solid #81C784;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            max-height: 95%;
+            overflow-y: auto;
         }
+
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        @media (max-width: 600px) { .options-grid { grid-template-columns: 1fr; } }
+        
+        .option-btn { background: #FFF; border: 3px solid #C8E6C9; border-radius: 14px; padding: 12px; font-size: 1.1rem; font-weight: bold; text-align: left; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
+        .option-btn:hover { border-color: var(--primary); background: #E8F5E9; }
+        .option-btn.correct { border-color: #4CAF50 !important; background: #E8F5E9 !important; color: #2E7D32; }
+        .option-btn.wrong { border-color: #E57373 !important; background: #FFEBEE !important; color: #C62828; }
+
+        .dash-tabs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; }
+        .tab-btn { padding: 10px 20px; background: #E8F5E9; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; }
+        .tab-btn.active { background: var(--primary); color: white; }
+
+        .editor-slot { background: #FFFDF9; border: 2px solid #C8E6C9; border-radius: 16px; padding: 15px; margin-bottom: 20px; text-align: left; }
+        .image-editor-box { background: #F0F7F4; padding: 12px; border-radius: 12px; border: 2px dashed #A5D6A7; margin: 10px 0; }
+        .preview-thumb { max-width: 100px; max-height: 100px; border-radius: 8px; border: 2px solid #DDD; margin-top: 8px; }
+
+        .lb-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .lb-table th, .lb-table td { padding: 10px; text-align: left; border-bottom: 1px solid #EEE; }
+        .lb-table th { background: #E8F5E9; color: var(--dark-text); font-weight: bold; }
+
+        .sound-toggle { position: fixed; top: 15px; right: 15px; z-index: 1000; background: white; border: 2px solid var(--accent); border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.3rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     </style>
 </head>
-<body class="text-slate-700 min-h-screen flex flex-col justify-between p-2 md:p-6">
+<body>
 
-    <!-- Header / Banner -->
-    <header class="max-w-4xl w-full mx-auto text-center my-4">
-        <div class="pastel-card p-4 bg-amber-50 flex flex-wrap justify-between items-center">
-            <div class="flex items-center gap-3">
-                <span class="text-4xl">🐱</span>
-                <div class="text-left">
-                    <h1 id="app-title" class="text-2xl md:text-3xl text-pink-500 tracking-wide">FOOD AND VEGETABLES</h1>
-                    <p class="text-sm font-bold text-amber-600">SUBJECT: <span id="app-subject">ENGLISH</span> | <span id="app-standard">YEAR 1</span> - <span id="app-topic">LUNCHTIME</span></p>
-                </div>
+    <button class="sound-toggle" onclick="toggleMute()" id="muteBtn" title="切换声音">🔊</button>
+
+    <!-- 1. HOMEPAGE -->
+    <div id="screen-home" class="screen active">
+        <div class="card" style="text-align: center;">
+            <div style="font-size: 3.5rem; margin-bottom: 10px;">🐰🌳🌲🍢</div>
+            <span class="badge" id="disp-subject-year">华语 | 二年级</span>
+            <h1 id="disp-title" style="margin-top: 10px;">单元十九 热闹的夜市</h1>
+            <p class="subtitle">指导老师：<span id="disp-teacher">许老师</span></p>
+
+            <div style="max-width: 380px; margin: 0 auto 20px auto;">
+                <label style="font-weight: bold; display: block; text-align: left; margin-bottom: 5px;">请输入学生姓名：</label>
+                <input type="text" id="player-name" placeholder="例如：小明 / Ali">
             </div>
-            <div class="mt-2 md:mt-0 text-right">
-                <span class="text-xs font-bold text-slate-400 block">TEACHER</span>
-                <span id="app-teacher" class="font-fun text-lg text-indigo-500">MISS HII</span>
+
+            <div style="display: flex; flex-direction: column; gap: 10px; max-width: 380px; margin: 0 auto;">
+                <button class="btn" onclick="startRunnerGame()">🚀 开始森林跑酷</button>
+                <button class="btn btn-secondary" onclick="showScreen('screen-leaderboard')">🏆 浏览排行榜</button>
+                <button class="btn btn-purple" onclick="showInstructions()">📖 游戏规则说明</button>
+                <button class="btn btn-warning" onclick="promptTeacherPin()">🔒 教师管理后台</button>
             </div>
         </div>
-    </header>
+    </div>
 
-    <!-- MAIN VIEW CONTAINER -->
-    <main class="max-w-4xl w-full mx-auto flex-1 flex flex-col justify-center">
+    <!-- 2. GAME RUNNER SCREEN -->
+    <div id="screen-game" class="screen">
+        <div class="card" style="padding: 15px;">
+            <div id="game-container">
+                <div class="hud-overlay">
+                    <div class="hud-box">生命: <span id="hud-lives">❤️❤️❤️</span></div>
+                    <div class="hud-box">倒计时: <span id="hud-timer" style="color: #FF7043;">5s</span></div>
+                    <div class="hud-box">得分: <span id="hud-score" style="color:#2E7D32;">0</span></div>
+                </div>
 
-        <!-- VIEW: HOMEPAGE -->
-        <section id="view-home" class="pastel-card p-6 md:p-10 text-center my-auto space-y-6">
-            <div class="text-6xl animate-bounce my-2">🥦 🍎 🥥 🍓</div>
-            <h2 class="text-3xl font-fun text-slate-700">Welcome, Young Explorer!</h2>
-            <p class="text-slate-500 max-w-md mx-auto font-semibold">Enter your name below and start your fun food learning adventure!</p>
-            
-            <div class="max-w-xs mx-auto space-y-4">
-                <input type="text" id="pupil-name" placeholder="Enter Pupil Name..." class="w-full text-center px-4 py-3 rounded-2xl border-4 border-pink-200 text-xl font-bold focus:outline-none focus:border-pink-400">
-                <button onclick="startGame()" class="w-full pastel-btn pastel-btn-green py-3 text-2xl font-fun text-slate-800">🎮 START GAME</button>
-            </div>
+                <canvas id="runnerCanvas" width="800" height="320"></canvas>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-4">
-                <button onclick="showInstructions()" class="pastel-btn bg-yellow-100 border-yellow-300 py-2 font-bold">📜 Instructions</button>
-                <button onclick="showLeaderboard()" class="pastel-btn bg-purple-100 border-purple-300 py-2 font-bold">🏆 Leaderboard</button>
-                <button onclick="promptTeacherPIN()" class="pastel-btn bg-blue-100 border-blue-300 py-2 font-bold">🔒 Teacher Dashboard</button>
-            </div>
-        </section>
-
-        <!-- VIEW: LEVEL SELECTION -->
-        <section id="view-levels" class="hidden pastel-card p-6 md:p-8 text-center space-y-6">
-            <h2 class="text-3xl font-fun text-pink-500">Choose a Level</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Level 1 -->
-                <div class="p-6 border-4 border-green-200 rounded-3xl bg-green-50 flex flex-col justify-between">
-                    <div>
-                        <span class="text-4xl">🌱</span>
-                        <h3 class="text-xl font-fun text-green-700 mt-2">Level 1</h3>
-                        <p class="text-sm text-green-600 font-semibold mb-4">Identification (MCQ)</p>
+                <!-- Quiz Popup Overlay -->
+                <div id="quiz-modal">
+                    <div id="quiz-card">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span class="badge">答题赚分 (+10分)</span>
+                            <span style="font-weight: bold; color: #2E7D32;" id="quiz-progress">问题 1 / 10</span>
+                        </div>
+                        <h2 id="q-text" style="font-size: 1.3rem; margin-bottom: 10px;">题目加载中...</h2>
+                        <div id="q-img-box" style="display: none; margin: 10px 0;"><img id="q-img" style="max-height: 120px; border-radius: 10px;" src=""></div>
+                        <div class="options-grid" id="options-container"></div>
+                        <div id="explanation-box" style="display: none; margin-top: 12px; padding: 10px; background: #FFF9C4; border-radius: 10px; border: 2px solid #FBC02D; text-align: left; font-size: 0.95rem;">
+                            <strong>💡 解析：</strong> <span id="exp-text"></span>
+                        </div>
+                        <div style="text-align: right; margin-top: 12px;">
+                            <button class="btn btn-secondary" id="next-btn" style="display: none;" onclick="continueRunner()">继续跑酷 ➔</button>
+                        </div>
                     </div>
-                    <button id="btn-lvl-1" onclick="loadLevel(1)" class="pastel-btn pastel-btn-green w-full py-2 font-bold">Play Level 1</button>
-                </div>
-                <!-- Level 2 -->
-                <div class="p-6 border-4 border-blue-200 rounded-3xl bg-blue-50 flex flex-col justify-between opacity-50" id="card-lvl-2">
-                    <div>
-                        <span class="text-4xl">🧺</span>
-                        <h3 class="text-xl font-fun text-blue-700 mt-2">Level 2</h3>
-                        <p class="text-sm text-blue-600 font-semibold mb-4">Fruit or Vegetable?</p>
-                    </div>
-                    <button id="btn-lvl-2" onclick="loadLevel(2)" disabled class="pastel-btn pastel-btn-blue w-full py-2 font-bold">Locked 🔒</button>
-                </div>
-                <!-- Level 3 -->
-                <div class="p-6 border-4 border-purple-200 rounded-3xl bg-purple-50 flex flex-col justify-between opacity-50" id="card-lvl-3">
-                    <div>
-                        <span class="text-4xl">🔤</span>
-                        <h3 class="text-xl font-fun text-purple-700 mt-2">Level 3</h3>
-                        <p class="text-sm text-purple-600 font-semibold mb-4">Letter Unscramble</p>
-                    </div>
-                    <button id="btn-lvl-3" onclick="loadLevel(3)" disabled class="pastel-btn bg-purple-200 w-full py-2 font-bold">Locked 🔒</button>
-                </div>
-            </div>
-            <button onclick="showView('view-home')" class="pastel-btn bg-gray-100 border-gray-300 px-6 py-2 font-bold">⬅️ Back to Main Menu</button>
-        </section>
-
-        <!-- VIEW: GAMEPLAY (LEVEL 1 MCQ) -->
-        <section id="view-game-l1" class="hidden pastel-card p-6 md:p-8 space-y-6">
-            <div class="flex justify-between items-center border-b-2 border-amber-100 pb-3">
-                <span class="font-fun text-lg text-amber-600">Level 1: Identification</span>
-                <span id="l1-progress" class="font-bold text-slate-500">Q 1/10</span>
-            </div>
-            
-            <div id="l1-container" class="text-center space-y-4">
-                <h3 id="l1-question-text" class="text-2xl font-fun text-slate-700">What is this?</h3>
-                
-                <!-- Image Container -->
-                <div class="w-52 h-52 mx-auto bg-slate-50 border-4 border-amber-200 rounded-2xl flex items-center justify-center overflow-hidden p-2">
-                    <img id="l1-image" src="" alt="Question Image" class="object-contain max-h-full max-w-full hidden" onerror="handleImgError(this)">
-                    <span id="l1-image-placeholder" class="text-6xl">🥥</span>
-                </div>
-
-                <!-- MCQ Options (All small letters) -->
-                <div id="l1-options" class="grid grid-cols-1 md:grid-cols-3 gap-3 max-w-xl mx-auto pt-2">
-                    <!-- Dynamic Buttons -->
                 </div>
             </div>
 
-            <div id="l1-feedback" class="hidden p-4 rounded-2xl text-center font-bold"></div>
-        </section>
+            <!-- Jump Button -->
+            <button class="btn btn-jump" id="jumpBtn" onclick="triggerJump()">🦘 点击跳跃 (JUMP) / 按空格键</button>
+        </div>
+    </div>
 
-        <!-- VIEW: GAMEPLAY (LEVEL 2 CATEGORIZATION) -->
-        <section id="view-game-l2" class="hidden pastel-card p-6 md:p-8 space-y-6">
-            <div class="flex justify-between items-center border-b-2 border-amber-100 pb-3">
-                <span class="font-fun text-lg text-amber-600">Level 2: Fruit or Vegetable?</span>
-                <span id="l2-progress" class="font-bold text-slate-500">Item 1/10</span>
+    <!-- 3. RESULT SCREEN -->
+    <div id="screen-result" class="screen">
+        <div class="card" style="text-align: center;">
+            <div style="font-size: 4rem;" id="res-emoji">🎉</div>
+            <h1 id="res-title">游戏结束！</h1>
+            <p class="subtitle" id="res-subtitle">森林跑酷顺利完成！</p>
+
+            <div style="background: #E8F5E9; padding: 20px; border-radius: 16px; margin: 20px 0; display: inline-block; width: 100%; max-width: 400px;">
+                <p style="font-size: 1.2rem; margin-bottom: 8px;">总得分: <strong style="color: #2E7D32; font-size: 1.8rem;" id="res-score">0</strong></p>
+                <p style="font-size: 1rem; color: #4B6050;">答对题数: <span id="res-correct">0</span> / 10 | 用时: <span id="res-time">0秒</span></p>
             </div>
 
-            <div class="text-center space-y-4">
-                <p class="text-slate-500 font-bold">Classify the given item correctly into fruit or vegetable:</p>
-                <div class="p-4 bg-amber-50 rounded-2xl border-2 border-amber-200 inline-block">
-                    <h3 id="l2-word" class="text-3xl font-fun text-indigo-600 lowercase">item</h3>
-                </div>
-
-                <div class="flex justify-center gap-6 pt-4">
-                    <button onclick="submitL2Answer('fruit')" class="pastel-btn bg-pink-200 border-pink-400 px-8 py-4 text-xl font-fun flex flex-col items-center gap-1 lowercase">
-                        <span>🍎</span> fruit
-                    </button>
-                    <button onclick="submitL2Answer('vegetable')" class="pastel-btn pastel-btn-green px-8 py-4 text-xl font-fun flex flex-col items-center gap-1 lowercase">
-                        <span>🥦</span> vegetable
-                    </button>
-                </div>
+            <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                <button class="btn" onclick="showScreen('screen-home')">🏠 返回主页</button>
+                <button class="btn btn-secondary" onclick="showScreen('screen-leaderboard')">🏆 查看排行榜</button>
             </div>
+        </div>
+    </div>
 
-            <div id="l2-feedback" class="hidden p-4 rounded-2xl text-center font-bold"></div>
-        </section>
-
-        <!-- VIEW: GAMEPLAY (LEVEL 3 UNSCRAMBLE) -->
-        <section id="view-game-l3" class="hidden pastel-card p-6 md:p-8 space-y-6">
-            <div class="flex justify-between items-center border-b-2 border-amber-100 pb-3">
-                <span class="font-fun text-lg text-amber-600">Level 3: Letter Unscramble</span>
-                <span id="l3-progress" class="font-bold text-slate-500">Word 1/10</span>
-            </div>
-
-            <div class="text-center space-y-4">
-                <p class="text-slate-500 font-bold">Unscramble the small letters to spell the correct food word!</p>
-                
-                <div class="w-36 h-36 mx-auto bg-slate-50 border-4 border-amber-200 rounded-2xl flex items-center justify-center overflow-hidden p-2">
-                    <img id="l3-image" src="" alt="Word Image" class="object-contain max-h-full max-w-full hidden" onerror="handleImgError(this)">
-                    <span id="l3-placeholder" class="text-5xl">📷</span>
-                </div>
-
-                <!-- Answer Slots -->
-                <div id="l3-slots" class="flex justify-center gap-2 flex-wrap min-h-[56px]"></div>
-
-                <!-- Letter Bank -->
-                <div id="l3-tiles" class="flex justify-center gap-2 flex-wrap pt-4"></div>
-
-                <div>
-                    <button onclick="clearL3Slots()" class="text-xs text-red-500 underline font-bold">Clear Answer</button>
-                </div>
-            </div>
-
-            <div id="l3-feedback" class="hidden p-4 rounded-2xl text-center font-bold"></div>
-        </section>
-
-        <!-- VIEW: INSTRUCTIONS -->
-        <section id="view-instructions" class="hidden pastel-card p-6 md:p-8 space-y-4">
-            <h2 class="text-2xl font-fun text-indigo-600">📜 How to Play</h2>
-            <ul class="list-disc list-inside space-y-2 text-slate-600 font-semibold">
-                <li><strong class="text-green-600">Level 1:</strong> Identify food items from pictures. Choose the correct answer option formatted in small letters.</li>
-                <li><strong class="text-blue-600">Level 2:</strong> Categorize items as <span class="text-pink-500 font-bold">fruit</span> or <span class="text-green-600 font-bold">vegetable</span>. Note: tomato is scientifically classified as a fruit!</li>
-                <li><strong class="text-purple-600">Level 3:</strong> Tap the scrambled small letter tiles in the correct order to spell out the target food word.</li>
-            </ul>
-            <button onclick="showView('view-home')" class="pastel-btn bg-slate-200 border-slate-300 px-6 py-2 font-bold mt-4">⬅️ Back to Menu</button>
-        </section>
-
-        <!-- VIEW: LEADERBOARD -->
-        <section id="view-leaderboard" class="hidden pastel-card p-6 md:p-8 space-y-4">
-            <h2 class="text-2xl font-fun text-purple-600 text-center">🏆 Classroom Leaderboard</h2>
-            
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
+    <!-- 4. LEADERBOARD SCREEN -->
+    <div id="screen-leaderboard" class="screen">
+        <div class="card">
+            <button class="btn btn-secondary" style="padding: 6px 15px; font-size: 0.9rem;" onclick="showScreen('screen-home')">⬅ 返回主页</button>
+            <h1 style="margin-top: 10px;">🏆 学习英雄榜</h1>
+            <div style="overflow-x: auto;">
+                <table class="lb-table">
                     <thead>
-                        <tr class="border-b-2 border-purple-200 text-purple-800">
-                            <th class="p-2">Rank</th>
-                            <th class="p-2">Pupil Name</th>
-                            <th class="p-2">Score</th>
-                            <th class="p-2">Time</th>
+                        <tr>
+                            <th>名次</th>
+                            <th>学生姓名</th>
+                            <th>总得分</th>
+                            <th>答对题数</th>
+                            <th>总用时</th>
                         </tr>
                     </thead>
-                    <tbody id="leaderboard-body" class="font-semibold text-slate-700">
-                    </tbody>
+                    <tbody id="lb-body"></tbody>
                 </table>
             </div>
+        </div>
+    </div>
 
-            <div class="text-center pt-4">
-                <button onclick="showView('view-home')" class="pastel-btn bg-slate-200 border-slate-300 px-6 py-2 font-bold">⬅️ Back to Menu</button>
-            </div>
-        </section>
-
-        <!-- VIEW: TEACHER DASHBOARD (PIN: 1234) -->
-        <section id="view-dashboard" class="hidden pastel-card p-6 md:p-8 space-y-6">
-            <div class="flex justify-between items-center border-b-2 border-indigo-100 pb-3">
-                <h2 class="text-2xl font-fun text-indigo-600">🔒 Teacher Dashboard</h2>
-                <button onclick="showView('view-home')" class="pastel-btn bg-red-100 border-red-300 px-4 py-1 text-sm font-bold">Exit Dashboard</button>
+    <!-- 5. TEACHER DASHBOARD -->
+    <div id="screen-dashboard" class="screen">
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h1>🔒 教师控制台 (Teacher Dashboard)</h1>
+                <button class="btn btn-danger" style="padding: 6px 15px; font-size: 0.9rem;" onclick="showScreen('screen-home')">退出后台</button>
             </div>
 
-            <!-- Configuration -->
-            <div class="bg-indigo-50 p-4 rounded-2xl space-y-3">
-                <h3 class="font-fun text-indigo-700">Game Information Settings</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div>
-                        <label class="text-xs font-bold text-slate-500">Game Title</label>
-                        <input type="text" id="cfg-title" class="w-full p-2 rounded-xl border border-indigo-200 font-bold">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-slate-500">Subject</label>
-                        <input type="text" id="cfg-subject" class="w-full p-2 rounded-xl border border-indigo-200 font-bold">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-slate-500">Standard / Year</label>
-                        <input type="text" id="cfg-standard" class="w-full p-2 rounded-xl border border-indigo-200 font-bold">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-slate-500">Topic</label>
-                        <input type="text" id="cfg-topic" class="w-full p-2 rounded-xl border border-indigo-200 font-bold">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-slate-500">Teacher's Name</label>
-                        <input type="text" id="cfg-teacher" class="w-full p-2 rounded-xl border border-indigo-200 font-bold">
-                    </div>
+            <div class="dash-tabs">
+                <button class="tab-btn active" onclick="switchDashTab('tab-general')">⚙ 基础设置</button>
+                <button class="tab-btn" onclick="switchDashTab('tab-q1')">📝 修改题目 (10题)</button>
+                <button class="tab-btn" onclick="switchDashTab('tab-analytics')">📊 班级错题分析</button>
+                <button class="tab-btn" onclick="switchDashTab('tab-data')">💾 JSON备份/Firebase</button>
+            </div>
+
+            <div id="tab-general" class="dash-content">
+                <h2>游戏基本信息设置</h2>
+                <label>游戏标题：</label><input type="text" id="cfg-title">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div><label>科目：</label><input type="text" id="cfg-subject"></div>
+                    <div><label>年级：</label><input type="text" id="cfg-year"></div>
                 </div>
-                <button onclick="saveGeneralConfig()" class="pastel-btn pastel-btn-green px-4 py-2 text-sm font-bold mt-2">Save Game Info</button>
+                <label>教师姓名：</label><input type="text" id="cfg-teacher">
+                <button class="btn btn-secondary" onclick="saveGeneralConfig()">💾 保存基本配置</button>
             </div>
 
-            <!-- Management Tools -->
-            <div class="flex flex-wrap gap-2 pt-2">
-                <button onclick="exportJSON()" class="pastel-btn bg-emerald-100 border-emerald-300 px-3 py-2 text-xs font-bold">💾 Export Game File (JSON)</button>
-                <label class="pastel-btn bg-sky-100 border-sky-300 px-3 py-2 text-xs font-bold cursor-pointer">
-                    📂 Import Game File (JSON)
-                    <input type="file" id="import-file" accept=".json" class="hidden" onchange="importJSON(event)">
-                </label>
-                <button onclick="exportCSV()" class="pastel-btn bg-amber-100 border-amber-300 px-3 py-2 text-xs font-bold">📊 Export Scores (CSV)</button>
-                <button onclick="resetLeaderboard()" class="pastel-btn bg-red-100 border-red-300 px-3 py-2 text-xs font-bold">🗑️ Reset Leaderboard</button>
+            <div id="tab-q1" class="dash-content" style="display: none;"></div>
+
+            <div id="tab-analytics" class="dash-content" style="display: none;">
+                <h2>班级高频错题记录</h2>
+                <div id="analytics-list"></div>
             </div>
 
-            <!-- Level 1 Questions Editor -->
-            <div class="space-y-4">
-                <h3 class="font-fun text-xl text-indigo-700">Level 1 Questions & Dual Image Editor</h3>
-                <div id="editor-l1-container" class="space-y-4">
+            <div id="tab-data" class="dash-content" style="display: none;">
+                <h2>数据备份与导入导出 (JSON)</h2>
+                <div style="display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap;">
+                    <button class="btn" onclick="exportDataJSON()">📥 导出游戏文件 (JSON)</button>
+                    <button class="btn btn-purple" onclick="document.getElementById('file-import-json').click()">📤 导入游戏文件 (JSON)</button>
+                    <input type="file" id="file-import-json" accept=".json" style="display:none" onchange="importDataJSON(event)">
+                    <button class="btn btn-danger" onclick="resetLeaderboard()">🗑 清空排行榜数据</button>
+                    <button class="btn btn-warning" onclick="restoreDefaults()">🔄 恢复系统初始模版</button>
                 </div>
+                <hr style="margin: 20px 0; border: 1px solid #EEE;">
+                <h2>Firebase 实时云端数据库设置 (选填)</h2>
+                <label>Firebase Realtime Database URL:</label>
+                <input type="text" id="cfg-fb-url" placeholder="https://your-db-name.firebaseio.com">
+                <button class="btn btn-secondary" onclick="saveFirebaseConfig()">💾 保存云端连接配置</button>
             </div>
-        </section>
+        </div>
+    </div>
 
-    </main>
-
-    <!-- Footer -->
-    <footer class="text-center text-xs text-slate-400 my-4 font-semibold">
-        Interactive Primary Learning Engine
-    </footer>
-
-    <!-- JAVASCRIPT ENGINE -->
     <script>
-        // Grammar & Plurality Accurate Imagery Setup (Wikimedia SVG Vector Assets)
+        // --- 1. DEFAULT QUESTIONS (RESTORED EXACT QUESTIONS) ---
         const DEFAULT_APP_DATA = {
-            title: "FOOD AND VEGETABLES",
-            subject: "ENGLISH",
-            standard: "YEAR 1",
-            topic: "LUNCHTIME",
-            teacher: "MISS HII",
-            level1: [
-                { id: 1, text: "What is this?", image: "https://upload.wikimedia.org/wikipedia/commons/f/f1/Coconut_Clipart.svg", options: ["coconut", "orange", "potato"], answer: "coconut", emoji: "🥥" },
-                { id: 2, text: "What is this?", image: "https://upload.wikimedia.org/wikipedia/commons/2/29/Strawberry_clpart_art_vector.svg", options: ["strawberry", "pineapple", "tomato"], answer: "strawberry", emoji: "🍓" },
-                { id: 3, text: "What is this?", image: "https://upload.wikimedia.org/wikipedia/commons/0/05/Cabbage_Clipart_Vector.svg", options: ["onion", "cabbage", "oranges"], answer: "cabbage", emoji: "🥬" },
-                { id: 4, text: "What is this?", image: "https://upload.wikimedia.org/wikipedia/commons/8/87/Broccoli_Clipart.svg", options: ["strawberry", "green bean", "broccoli"], answer: "broccoli", emoji: "🥦" },
-                { id: 5, text: "What is this?", image: "https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.svg", options: ["coconut", "tomato", "potato"], answer: "tomato", emoji: "🍅" },
-                { id: 6, text: "What is this?", image: "https://upload.wikimedia.org/wikipedia/commons/8/8b/Red_Onion_Clipart.svg", options: ["broccoli", "pineapple", "onion"], answer: "onion", emoji: "🧅" },
-                { id: 7, text: "What is this?", image: "https://upload.wikimedia.org/wikipedia/commons/a/ab/Potato_Clipart.svg", options: ["orange", "cabbage", "potato"], answer: "potato", emoji: "🥔" },
-                { id: 8, text: "What is this?", image: "https://upload.wikimedia.org/wikipedia/commons/c/cb/Pineapple_Vector.svg", options: ["pineapple", "strawberry", "coconut"], answer: "pineapple", emoji: "🍍" },
-                { id: 9, text: "What are these?", image: "https://upload.wikimedia.org/wikipedia/commons/d/df/Green_Beans_Clipart.svg", options: ["tomato", "green beans", "broccoli"], answer: "green beans", emoji: "🫛" },
-                { id: 10, text: "What are these?", image: "https://upload.wikimedia.org/wikipedia/commons/c/c4/Orange-Fruit-Pieces.svg", options: ["potato", "oranges", "cabbage"], answer: "oranges", emoji: "🍊" }
-            ],
-            level2: [
-                { word: "coconuts", type: "fruit" },
-                { word: "pineapples", type: "fruit" },
-                { word: "oranges", type: "fruit" },
-                { word: "strawberries", type: "fruit" },
-                { word: "tomatoes", type: "fruit" }, // Correctly classified as a fruit
-                { word: "broccoli", type: "vegetable" },
-                { word: "potatoes", type: "vegetable" },
-                { word: "onions", type: "vegetable" },
-                { word: "green beans", type: "vegetable" },
-                { word: "cabbages", type: "vegetable" }
-            ],
-            level3: [
-                { word: "coconut", image: "https://upload.wikimedia.org/wikipedia/commons/f/f1/Coconut_Clipart.svg", emoji: "🥥" },
-                { word: "strawberry", image: "https://upload.wikimedia.org/wikipedia/commons/2/29/Strawberry_clpart_art_vector.svg", emoji: "🍓" },
-                { word: "cabbage", image: "https://upload.wikimedia.org/wikipedia/commons/0/05/Cabbage_Clipart_Vector.svg", emoji: "🥬" },
-                { word: "broccoli", image: "https://upload.wikimedia.org/wikipedia/commons/8/87/Broccoli_Clipart.svg", emoji: "🥦" },
-                { word: "tomato", image: "https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.svg", emoji: "🍅" },
-                { word: "onion", image: "https://upload.wikimedia.org/wikipedia/commons/8/8b/Red_Onion_Clipart.svg", emoji: "🧅" },
-                { word: "potato", image: "https://upload.wikimedia.org/wikipedia/commons/a/ab/Potato_Clipart.svg", emoji: "🥔" },
-                { word: "pineapple", image: "https://upload.wikimedia.org/wikipedia/commons/c/cb/Pineapple_Vector.svg", emoji: "🍍" },
-                { word: "orange", image: "https://upload.wikimedia.org/wikipedia/commons/c/c4/Orange-Fruit-Pieces.svg", emoji: "🍊" },
-                { word: "beans", image: "https://upload.wikimedia.org/wikipedia/commons/d/df/Green_Beans_Clipart.svg", emoji: "🫛" }
-            ]
+            config: {
+                title: "单元十九 热闹的夜市",
+                subject: "华语",
+                year: "二年级",
+                teacher: "许老师",
+                firebaseUrl: ""
+            },
+            questions: {
+                level1: [
+                    { q: "夜市里人山人海，出售的美食______，让人流口水。", img: "", options: ["多不胜数", "古色古香", "五颜六色", "一般般"], ans: 0, exp: "“多不胜数”形容数量极其繁多。", score: 10 },
+                    { q: "妈妈在夜市买了一把新______子给我吃饭用。", img: "", options: ["筷", "快", "卖", "买"], ans: 0, exp: "用餐工具为“筷子”。", score: 10 },
+                    { q: "夜市入口处挂满了______的灯笼，非常好看。", img: "", options: ["五颜六色", "多不胜数", "古色古香", "一般般"], ans: 0, exp: "“五颜六色”形容色彩多样鲜艳。", score: 10 },
+                    { q: "这家小吃店的装修风格显得______，富有传统特色。", img: "", options: ["古色古香", "五颜六色", "多不胜数", "一般般"], ans: 0, exp: "“古色古香”形容富有古雅色彩或情调。", score: 10 },
+                    { q: "小明走路的速度非常______，一会儿就跑远了。", img: "", options: ["快", "筷", "般", "古"], ans: 0, exp: "速度高为“快”。", score: 10 },
+                    { q: "摊主在夜市里大声喊着，准备______完所有的水果。", img: "", options: ["卖", "买", "般", "舌"], ans: 0, exp: "出售货物为“卖”。", score: 10 },
+                    { q: "我们用嘴巴和______来品尝夜市里的美味食物。", img: "", options: ["舌头", "古", "船", "筷"], ans: 0, exp: "品尝食物的味觉器官为“舌头”。", score: 10 },
+                    { q: "我们搭乘小______穿过河流，前往河畔夜市。", img: "", options: ["船", "般", "快", "买"], ans: 0, exp: "水上交通工具为“船”。", score: 10 },
+                    { q: "这里的夜市和普通的夜市不太一______，特别热闹。", img: "", options: ["般", "船", "筷", "卖"], ans: 0, exp: "“一般”表示普通、同样。", score: 10 },
+                    { q: "弟弟拿了零用钱，向摊贩______了一份美味的章鱼烧。", img: "", options: ["买", "卖", "古", "舌"], ans: 0, exp: "购买货物为“买”。", score: 10 }
+                ]
+            },
+            leaderboard: [],
+            mistakes: {}
         };
 
-        let appData = JSON.parse(JSON.stringify(DEFAULT_APP_DATA));
-        let pupilProgress = {
-            name: "",
-            score: 0,
-            unlockedLevel: 1,
-            startTime: null,
-            totalTimeSeconds: 0
-        };
+        let appData = {};
+        let currentUser = { name: "", score: 0 };
+        let isMuted = false;
 
-        let currentLevel = 1;
-        let currentQuestionIndex = 0;
-        let l3CurrentAnswer = [];
+        // Sound Effects (Web Audio API)
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
 
-        // Web Audio Synthesizer (Zero External Dependencies)
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playTone(freq, duration, type = 'sine') {
+        function playSound(type) {
+            if (isMuted) return;
             try {
+                if (!audioCtx) audioCtx = new AudioCtx();
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-                osc.type = type;
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            } catch(e){}
+
+                if (type === 'jump') {
+                    osc.frequency.setValueAtTime(160, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(450, audioCtx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.15);
+                } else if (type === 'hit') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(40, audioCtx.currentTime + 0.25);
+                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.25);
+                } else if (type === 'correct') {
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(174.61, audioCtx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+                } else if (type === 'lifeup') {
+                    osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(600, audioCtx.currentTime + 0.1);
+                    osc.frequency.setValueAtTime(800, audioCtx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.35);
+                }
+            } catch (e) {}
         }
 
-        function playSound(isCorrect) {
-            if (isCorrect) {
-                playTone(523.25, 0.1);
-                setTimeout(() => playTone(659.25, 0.15), 100);
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.getElementById('muteBtn').innerText = isMuted ? "🔇" : "🔊";
+        }
+
+        function initStorage() {
+            const local = localStorage.getItem('CHINESE_FOREST_RUNNER');
+            if (local) {
+                try { appData = JSON.parse(local); } catch(e) { appData = JSON.parse(JSON.stringify(DEFAULT_APP_DATA)); }
             } else {
-                playTone(220, 0.2, 'sawtooth');
+                appData = JSON.parse(JSON.stringify(DEFAULT_APP_DATA));
+                saveDataLocally();
+            }
+            renderHomepageInfo();
+        }
+
+        function saveDataLocally() {
+            localStorage.setItem('CHINESE_FOREST_RUNNER', JSON.stringify(appData));
+        }
+
+        function showScreen(screenId) {
+            playSound('click');
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            if (screenId === 'screen-leaderboard') renderLeaderboard();
+        }
+
+        function renderHomepageInfo() {
+            document.getElementById('disp-title').innerText = appData.config.title;
+            document.getElementById('disp-subject-year').innerText = `${appData.config.subject} | ${appData.config.year}`;
+            document.getElementById('disp-teacher').innerText = appData.config.teacher;
+        }
+
+        function showInstructions() {
+            alert("📖 游戏规则说明：\n\n1. 控制 3D 可爱小兔子在神秘森林里跑酷，躲避森林怪兽。\n2. 每隔 5 秒会自动弹出一道华语问题，答对获得 10 分！\n3. 初始拥有 3 条生命（❤️❤️❤️）。每答对 3 道题自动奖励 1 条生命！\n4. 触碰到怪兽会扣除 1 条生命！\n5. 可以点击【点击跳跃】按钮、按空格键或向上方向键跳跃！");
+        }
+
+        // --- 2D CANVAS 3D-STYLE FOREST GAME LOOP ---
+        let canvas, ctx;
+        let gameRunning = false;
+        let quizPaused = false;
+        let lives = 3;
+        let score = 0;
+        let currentQIndex = 0;
+        let correctCount = 0;
+        let gameStartTime = 0;
+        let timerCountdown = 5; // 5 SECONDS TIMER INTERVAL
+        let timerInterval = null;
+        let animFrameCounter = 0;
+
+        // 3D Bunny Character Object
+        const player = {
+            x: 90,
+            y: 195,
+            width: 46,
+            height: 52,
+            velocityY: 0,
+            gravity: 0.7,
+            jumpPower: -13.5,
+            isGrounded: true,
+            invulnerableTimer: 0
+        };
+
+        let monsters = [];
+        let backgroundOffset = 0;
+        let monsterSpawnTimer = 0;
+
+        function startRunnerGame() {
+            const name = document.getElementById('player-name').value.trim();
+            if (!name) { alert("请输入学生姓名！"); return; }
+            currentUser.name = name;
+
+            showScreen('screen-game');
+            
+            canvas = document.getElementById('runnerCanvas');
+            ctx = canvas.getContext('2d');
+
+            // Reset Game State
+            lives = 3;
+            score = 0;
+            currentQIndex = 0;
+            correctCount = 0;
+            gameStartTime = Date.now();
+            timerCountdown = 5;
+            monsters = [];
+            player.y = 195;
+            player.velocityY = 0;
+            player.isGrounded = true;
+
+            updateHUD();
+            gameRunning = true;
+            quizPaused = false;
+
+            startQuestionTimer();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function triggerJump() {
+            if (player.isGrounded && !quizPaused && gameRunning) {
+                player.velocityY = player.jumpPower;
+                player.isGrounded = false;
+                playSound('jump');
             }
         }
 
-        function handleImgError(imgEl) {
-            imgEl.classList.add('hidden');
-            const placeholder = imgEl.nextElementSibling;
-            if (placeholder) placeholder.classList.remove('hidden');
-        }
-
-        // Initialize and Enforce Small Letters Rule
-        window.addEventListener('DOMContentLoaded', () => {
-            loadPersistentData();
-            normalizeDataToLowercase();
-            updateUIHeader();
+        window.addEventListener('keydown', function(e) {
+            if (e.code === 'Space' || e.code === 'ArrowUp') {
+                e.preventDefault();
+                triggerJump();
+            }
         });
 
-        function normalizeDataToLowercase() {
-            if (appData.level1) {
-                appData.level1.forEach(q => {
-                    if (q.options) q.options = q.options.map(opt => opt.toLowerCase());
-                    if (q.answer) q.answer = q.answer.toLowerCase();
-                });
-            }
-            if (appData.level2) {
-                appData.level2.forEach(item => {
-                    if (item.word) item.word = item.word.toLowerCase();
-                    if (item.type) item.type = item.type.toLowerCase();
-                });
-            }
-            if (appData.level3) {
-                appData.level3.forEach(item => {
-                    if (item.word) item.word = item.word.toLowerCase();
-                });
-            }
+        document.getElementById('runnerCanvas').addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            triggerJump();
+        });
+
+        function startQuestionTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerCountdown = 5;
+            document.getElementById('hud-timer').innerText = `${timerCountdown}s`;
+
+            timerInterval = setInterval(() => {
+                if (!quizPaused && gameRunning) {
+                    timerCountdown--;
+                    document.getElementById('hud-timer').innerText = `${timerCountdown}s`;
+                    if (timerCountdown <= 0) {
+                        triggerQuizPopup();
+                    }
+                }
+            }, 1000);
         }
 
-        function loadPersistentData() {
-            const saved = localStorage.getItem('food_game_appData');
-            if (saved) {
-                try {
-                    appData = JSON.parse(saved);
-                } catch(e) {
-                    console.error("Failed to parse saved data", e);
+        function gameLoop() {
+            if (!gameRunning) return;
+
+            if (!quizPaused) {
+                animFrameCounter++;
+                updatePhysics();
+            }
+            renderForestCanvas();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function updatePhysics() {
+            player.velocityY += player.gravity;
+            player.y += player.velocityY;
+
+            const groundY = 195;
+            if (player.y >= groundY) {
+                player.y = groundY;
+                player.velocityY = 0;
+                player.isGrounded = true;
+            }
+
+            if (player.invulnerableTimer > 0) player.invulnerableTimer--;
+
+            backgroundOffset = (backgroundOffset + 2.5) % canvas.width;
+
+            monsterSpawnTimer++;
+            if (monsterSpawnTimer > 130) {
+                monsters.push({
+                    x: canvas.width + 30,
+                    y: 205,
+                    width: 40,
+                    height: 40,
+                    speed: 4.2
+                });
+                monsterSpawnTimer = 0;
+            }
+
+            for (let i = monsters.length - 1; i >= 0; i--) {
+                monsters[i].x -= monsters[i].speed;
+
+                if (player.invulnerableTimer <= 0 &&
+                    player.x < monsters[i].x + monsters[i].width &&
+                    player.x + player.width > monsters[i].x &&
+                    player.y < monsters[i].y + monsters[i].height &&
+                    player.y + player.height > monsters[i].y) {
+                    
+                    lives--;
+                    playSound('hit');
+                    player.invulnerableTimer = 45;
+                    updateHUD();
+
+                    if (lives <= 0) {
+                        endGame();
+                        return;
+                    }
+                }
+
+                if (monsters[i].x < -60) {
+                    monsters.splice(i, 1);
                 }
             }
-            updateUIHeader();
         }
 
-        function savePersistentData() {
-            localStorage.setItem('food_game_appData', JSON.stringify(appData));
-            updateUIHeader();
+        // --- RENDER 3D-STYLE FOREST, BUNNY & MONSTERS ---
+        function renderForestCanvas() {
+            // 1. Forest Deep Sky
+            let skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            skyGrad.addColorStop(0, "#0b1d12");
+            skyGrad.addColorStop(0.6, "#1e3f20");
+            skyGrad.addColorStop(1, "#2d5a27");
+            ctx.fillStyle = skyGrad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 2. Parallax Distant 3D Forest Trees
+            for (let i = -backgroundOffset * 0.5; i < canvas.width + 100; i += 90) {
+                ctx.fillStyle = "#143319";
+                ctx.beginPath();
+                ctx.moveTo(i, 250);
+                ctx.lineTo(i + 45, 70);
+                ctx.lineTo(i + 90, 250);
+                ctx.fill();
+            }
+
+            // 3. Foreground Trees & Canopy
+            for (let i = -backgroundOffset; i < canvas.width + 120; i += 130) {
+                // Tree Trunk with 3D Bark Shading
+                let trunkGrad = ctx.createLinearGradient(i + 35, 0, i + 55, 0);
+                trunkGrad.addColorStop(0, "#2c1a0e");
+                trunkGrad.addColorStop(0.5, "#4e3219");
+                trunkGrad.addColorStop(1, "#231309");
+                ctx.fillStyle = trunkGrad;
+                ctx.fillRect(i + 35, 110, 20, 140);
+
+                // Leaf Canopy Spheres
+                let leafGrad = ctx.createRadialGradient(i + 45, 90, 10, i + 45, 90, 45);
+                leafGrad.addColorStop(0, "#81c784");
+                leafGrad.addColorStop(0.7, "#388e3c");
+                leafGrad.addColorStop(1, "#1b5e20");
+                ctx.fillStyle = leafGrad;
+                ctx.beginPath();
+                ctx.arc(i + 45, 90, 42, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // 4. Ground Pathways with Grass Details
+            let groundGrad = ctx.createLinearGradient(0, 245, 0, canvas.height);
+            groundGrad.addColorStop(0, "#388e3c");
+            groundGrad.addColorStop(0.2, "#2e7d32");
+            groundGrad.addColorStop(1, "#1b431e");
+            ctx.fillStyle = groundGrad;
+            ctx.fillRect(0, 245, canvas.width, 75);
+
+            // Grass Path Top Rim
+            ctx.fillStyle = "#a5d6a7";
+            ctx.fillRect(0, 245, canvas.width, 5);
+
+            // 5. DRAW 3D CUTE BUNNY
+            if (player.invulnerableTimer % 6 < 3) {
+                const px = player.x;
+                const py = player.y;
+
+                // Bunny Bounce Offset during Run
+                const runBounce = player.isGrounded ? Math.sin(animFrameCounter * 0.3) * 3 : 0;
+
+                // 3D Ear Shadow / Spherical Radial Shading
+                let earGrad = ctx.createLinearGradient(px + 10, py - 25, px + 25, py);
+                earGrad.addColorStop(0, "#ffffff");
+                earGrad.addColorStop(0.7, "#f5f5f5");
+                earGrad.addColorStop(1, "#d0d0d0");
+
+                // Outer Ears
+                ctx.fillStyle = earGrad;
+                ctx.beginPath();
+                ctx.ellipse(px + 14, py - 16 + runBounce, 7, 18, -0.1, 0, Math.PI * 2);
+                ctx.ellipse(px + 30, py - 16 + runBounce, 7, 18, 0.1, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Inner Pink Ears
+                ctx.fillStyle = "#ffb7b2";
+                ctx.beginPath();
+                ctx.ellipse(px + 14, py - 16 + runBounce, 3.5, 12, -0.1, 0, Math.PI * 2);
+                ctx.ellipse(px + 30, py - 16 + runBounce, 3.5, 12, 0.1, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 3D Bunny Spherical Body
+                let bodyGrad = ctx.createRadialGradient(px + 20, py + 22 + runBounce, 5, px + 22, py + 24 + runBounce, 25);
+                bodyGrad.addColorStop(0, "#ffffff");
+                bodyGrad.addColorStop(0.75, "#eaeaea");
+                bodyGrad.addColorStop(1, "#b5b5b5");
+                ctx.fillStyle = bodyGrad;
+                ctx.beginPath();
+                ctx.arc(px + 22, py + 26 + runBounce, 22, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Cute Cheeks
+                ctx.fillStyle = "rgba(255, 182, 193, 0.6)";
+                ctx.beginPath();
+                ctx.arc(px + 12, py + 26 + runBounce, 5, 0, Math.PI * 2);
+                ctx.arc(px + 32, py + 26 + runBounce, 5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 3D Glowing Eyes
+                ctx.fillStyle = "#2c1a0e";
+                ctx.beginPath();
+                ctx.arc(px + 30, py + 22 + runBounce, 4, 0, Math.PI * 2);
+                ctx.fill();
+                // Eye Catchlight
+                ctx.fillStyle = "#ffffff";
+                ctx.beginPath();
+                ctx.arc(px + 31, py + 20 + runBounce, 1.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Cute Nose
+                ctx.fillStyle = "#ff8b94";
+                ctx.beginPath();
+                ctx.arc(px + 36, py + 26 + runBounce, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Fluffy Bunny Tail
+                let tailGrad = ctx.createRadialGradient(px, py + 28 + runBounce, 2, px, py + 28 + runBounce, 8);
+                tailGrad.addColorStop(0, "#ffffff");
+                tailGrad.addColorStop(1, "#cccccc");
+                ctx.fillStyle = tailGrad;
+                ctx.beginPath();
+                ctx.arc(px - 2, py + 28 + runBounce, 7, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // 6. DRAW 3D FOREST MONSTERS
+            monsters.forEach(m => {
+                const mx = m.x;
+                const my = m.y;
+
+                // 3D Monster Radial Gradient
+                let monsterGrad = ctx.createRadialGradient(mx + 12, my + 12, 4, mx + 20, my + 20, 22);
+                monsterGrad.addColorStop(0, "#ff5252");
+                monsterGrad.addColorStop(0.7, "#d32f2f");
+                monsterGrad.addColorStop(1, "#5f0909");
+                ctx.fillStyle = monsterGrad;
+                ctx.beginPath();
+                ctx.arc(mx + 20, my + 20, 20, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 3D Horns / Spikes
+                ctx.fillStyle = "#ffb74d";
+                ctx.beginPath();
+                ctx.moveTo(mx + 10, my + 5);
+                ctx.lineTo(mx + 15, my - 8);
+                ctx.lineTo(mx + 20, my + 3);
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.moveTo(mx + 22, my + 3);
+                ctx.lineTo(mx + 28, my - 8);
+                ctx.lineTo(mx + 32, my + 6);
+                ctx.fill();
+
+                // Glowing Monster Eye
+                ctx.fillStyle = "#fff";
+                ctx.beginPath();
+                ctx.arc(mx + 14, my + 15, 6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = "#000";
+                ctx.beginPath();
+                ctx.arc(mx + 12, my + 15, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Fangs
+                ctx.fillStyle = "#fff";
+                ctx.beginPath();
+                ctx.moveTo(mx + 12, my + 26);
+                ctx.lineTo(mx + 15, my + 32);
+                ctx.lineTo(mx + 18, my + 26);
+                ctx.fill();
+            });
         }
 
-        function updateUIHeader() {
-            document.getElementById('app-title').innerText = appData.title || "FOOD AND VEGETABLES";
-            document.getElementById('app-subject').innerText = appData.subject || "ENGLISH";
-            document.getElementById('app-standard').innerText = appData.standard || "YEAR 1";
-            document.getElementById('app-topic').innerText = appData.topic || "LUNCHTIME";
-            document.getElementById('app-teacher').innerText = appData.teacher || "MISS HII";
+        function updateHUD() {
+            let hearts = "";
+            for (let i = 0; i < lives; i++) hearts += "❤️";
+            document.getElementById('hud-lives').innerText = hearts || "💀";
+            document.getElementById('hud-score').innerText = score;
         }
 
-        function showView(viewId) {
-            const views = ['view-home', 'view-levels', 'view-game-l1', 'view-game-l2', 'view-game-l3', 'view-instructions', 'view-leaderboard', 'view-dashboard'];
-            views.forEach(v => document.getElementById(v).classList.add('hidden'));
-            document.getElementById(viewId).classList.remove('hidden');
-        }
+        // --- QUIZ POPUP OVERLAY ENGINE ---
+        function triggerQuizPopup() {
+            quizPaused = true;
+            document.getElementById('quiz-modal').style.display = 'flex';
 
-        function showInstructions() { showView('view-instructions'); }
-
-        function startGame() {
-            const name = document.getElementById('pupil-name').value.trim();
-            if (!name) {
-                alert("Please enter your name to start the game!");
+            const questions = appData.questions.level1;
+            if (currentQIndex >= questions.length) {
+                endGame();
                 return;
             }
-            pupilProgress.name = name;
-            pupilProgress.score = 0;
-            pupilProgress.startTime = Date.now();
-            updateLevelUnlocks();
-            showView('view-levels');
-        }
 
-        function updateLevelUnlocks() {
-            const btn2 = document.getElementById('btn-lvl-2');
-            const card2 = document.getElementById('card-lvl-2');
-            const btn3 = document.getElementById('btn-lvl-3');
-            const card3 = document.getElementById('card-lvl-3');
+            const qData = questions[currentQIndex];
+            document.getElementById('quiz-progress').innerText = `问题 ${currentQIndex + 1} / ${questions.length}`;
+            document.getElementById('q-text').innerText = `${currentQIndex + 1}. ${qData.q}`;
+            document.getElementById('explanation-box').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
 
-            if (pupilProgress.unlockedLevel >= 2) {
-                btn2.disabled = false;
-                btn2.innerText = "Play Level 2";
-                card2.classList.remove('opacity-50');
-            }
-            if (pupilProgress.unlockedLevel >= 3) {
-                btn3.disabled = false;
-                btn3.innerText = "Play Level 3";
-                card3.classList.remove('opacity-50');
-            }
-        }
-
-        function loadLevel(lvl) {
-            currentLevel = lvl;
-            currentQuestionIndex = 0;
-            if (lvl === 1) {
-                showView('view-game-l1');
-                renderL1Question();
-            } else if (lvl === 2) {
-                showView('view-game-l2');
-                appData.level2.sort(() => Math.random() - 0.5);
-                renderL2Question();
-            } else if (lvl === 3) {
-                showView('view-game-l3');
-                renderL3Question();
-            }
-        }
-
-        // ==========================================
-        // LEVEL 1 GAME LOGIC (STRICT SMALL LETTERS)
-        // ==========================================
-        function renderL1Question() {
-            const q = appData.level1[currentQuestionIndex];
-            document.getElementById('l1-progress').innerText = `Q ${currentQuestionIndex + 1}/10`;
-            document.getElementById('l1-question-text').innerText = q.text;
-            
-            const imgEl = document.getElementById('l1-image');
-            const placeholder = document.getElementById('l1-image-placeholder');
-            
-            if (q.emoji) placeholder.innerText = q.emoji;
-
-            if (q.image) {
-                imgEl.src = q.image;
-                imgEl.classList.remove('hidden');
-                placeholder.classList.add('hidden');
+            const imgBox = document.getElementById('q-img-box');
+            if (qData.img) {
+                document.getElementById('q-img').src = qData.img;
+                imgBox.style.display = 'block';
             } else {
-                imgEl.classList.add('hidden');
-                placeholder.classList.remove('hidden');
+                imgBox.style.display = 'none';
             }
 
-            const optionsContainer = document.getElementById('l1-options');
-            optionsContainer.innerHTML = '';
-            document.getElementById('l1-feedback').classList.add('hidden');
+            const optsContainer = document.getElementById('options-container');
+            optsContainer.innerHTML = '';
+            const prefixes = ['A', 'B', 'C', 'D'];
 
-            q.options.forEach(opt => {
-                const lowerOpt = opt.toLowerCase();
+            qData.options.forEach((optText, idx) => {
                 const btn = document.createElement('button');
-                btn.className = "pastel-btn bg-amber-100 border-amber-300 py-3 text-lg font-bold lowercase hover:bg-amber-200";
-                btn.innerText = lowerOpt;
-                btn.onclick = () => submitL1Answer(lowerOpt);
-                optionsContainer.appendChild(btn);
+                btn.className = 'option-btn';
+                btn.innerHTML = `<span style="background: var(--accent); padding: 4px 8px; border-radius: 6px;">${prefixes[idx]}</span> ${optText}`;
+                btn.onclick = () => checkQuizAnswer(idx, btn);
+                optsContainer.appendChild(btn);
             });
         }
 
-        function submitL1Answer(selectedOpt) {
-            const q = appData.level1[currentQuestionIndex];
-            const feedback = document.getElementById('l1-feedback');
-            feedback.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700');
+        function checkQuizAnswer(selectedIdx, btnEl) {
+            const qData = appData.questions.level1[currentQIndex];
+            const allBtns = document.querySelectorAll('#options-container .option-btn');
+            allBtns.forEach(b => b.style.pointerEvents = 'none');
 
-            if (selectedOpt.toLowerCase() === q.answer.toLowerCase()) {
-                playSound(true);
-                pupilProgress.score += 1;
-                feedback.classList.add('bg-green-100', 'text-green-700');
-                feedback.innerText = "🌟 Great job! Correct!";
-            } else {
-                playSound(false);
-                feedback.classList.add('bg-red-100', 'text-red-700');
-                feedback.innerText = `💡 Oops! The correct answer is: ${q.answer.toLowerCase()}`;
-            }
+            if (selectedIdx === qData.ans) {
+                btnEl.classList.add('correct');
+                score += (qData.score || 10);
+                correctCount++;
 
-            setTimeout(() => {
-                currentQuestionIndex++;
-                if (currentQuestionIndex < appData.level1.length) {
-                    renderL1Question();
+                // REWARD 1 LIFE FOR EVERY 3 CORRECT ANSWERS
+                if (correctCount % 3 === 0) {
+                    lives++;
+                    playSound('lifeup');
+                    confetti({ particleCount: 50, spread: 50, origin: { y: 0.5 } });
                 } else {
-                    pupilProgress.unlockedLevel = Math.max(pupilProgress.unlockedLevel, 2);
-                    alert("🎉 Level 1 completed! Level 2 is now unlocked!");
-                    updateLevelUnlocks();
-                    showView('view-levels');
+                    playSound('correct');
                 }
-            }, 1200);
-        }
-
-        // ==========================================
-        // LEVEL 2 GAME LOGIC (STRICT SMALL LETTERS)
-        // ==========================================
-        function renderL2Question() {
-            const item = appData.level2[currentQuestionIndex];
-            document.getElementById('l2-progress').innerText = `Item ${currentQuestionIndex + 1}/10`;
-            document.getElementById('l2-word').innerText = item.word.toLowerCase();
-            document.getElementById('l2-feedback').classList.add('hidden');
-        }
-
-        function submitL2Answer(type) {
-            const item = appData.level2[currentQuestionIndex];
-            const feedback = document.getElementById('l2-feedback');
-            feedback.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700');
-
-            if (type.toLowerCase() === item.type.toLowerCase()) {
-                playSound(true);
-                pupilProgress.score += 1;
-                feedback.classList.add('bg-green-100', 'text-green-700');
-                feedback.innerText = `🌟 Correct! ${item.word.toLowerCase()} is a ${item.type.toLowerCase()}!`;
             } else {
-                playSound(false);
-                feedback.classList.add('bg-red-100', 'text-red-700');
-                feedback.innerText = `💡 Note: ${item.word.toLowerCase()} is actually a ${item.type.toLowerCase()}!`;
+                playSound('wrong');
+                btnEl.classList.add('wrong');
+                allBtns[qData.ans].classList.add('correct');
+
+                const qKey = `Q${currentQIndex + 1}: ${qData.q}`;
+                appData.mistakes[qKey] = (appData.mistakes[qKey] || 0) + 1;
+                saveDataLocally();
             }
 
-            setTimeout(() => {
-                currentQuestionIndex++;
-                if (currentQuestionIndex < appData.level2.length) {
-                    renderL2Question();
-                } else {
-                    pupilProgress.unlockedLevel = Math.max(pupilProgress.unlockedLevel, 3);
-                    alert("🎉 Level 2 completed! Level 3 is now unlocked!");
-                    updateLevelUnlocks();
-                    showView('view-levels');
-                }
-            }, 1200);
+            if (qData.exp) {
+                document.getElementById('exp-text').innerText = qData.exp;
+                document.getElementById('explanation-box').style.display = 'block';
+            }
+
+            document.getElementById('next-btn').style.display = 'inline-block';
+            updateHUD();
         }
 
-        // ==========================================
-        // LEVEL 3 GAME LOGIC (SMALL LETTER UNSCRAMBLE)
-        // ==========================================
-        function renderL3Question() {
-            const item = appData.level3[currentQuestionIndex];
-            document.getElementById('l3-progress').innerText = `Word ${currentQuestionIndex + 1}/10`;
-            
-            const imgEl = document.getElementById('l3-image');
-            const placeholder = document.getElementById('l3-placeholder');
-            if (item.emoji) placeholder.innerText = item.emoji;
+        function continueRunner() {
+            currentQIndex++;
+            document.getElementById('quiz-modal').style.display = 'none';
 
-            if (item.image) {
-                imgEl.src = item.image;
-                imgEl.classList.remove('hidden');
-                placeholder.classList.add('hidden');
+            if (currentQIndex >= appData.questions.level1.length) {
+                endGame();
             } else {
-                imgEl.classList.add('hidden');
-                placeholder.classList.remove('hidden');
+                quizPaused = false;
+                startQuestionTimer();
+            }
+        }
+
+        function endGame() {
+            gameRunning = false;
+            clearInterval(timerInterval);
+            document.getElementById('quiz-modal').style.display = 'none';
+
+            const timeTaken = Math.round((Date.now() - gameStartTime) / 1000);
+            document.getElementById('res-score').innerText = score;
+            document.getElementById('res-correct').innerText = correctCount;
+            document.getElementById('res-time').innerText = `${timeTaken}秒`;
+
+            if (correctCount >= 6) {
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                playSound('correct');
             }
 
-            l3CurrentAnswer = [];
-            document.getElementById('l3-feedback').classList.add('hidden');
-
-            const slotsContainer = document.getElementById('l3-slots');
-            slotsContainer.innerHTML = '';
-            for (let i = 0; i < item.word.length; i++) {
-                const slot = document.createElement('div');
-                slot.className = 'tile-slot';
-                slot.id = `l3-slot-${i}`;
-                slotsContainer.appendChild(slot);
-            }
-
-            const tilesContainer = document.getElementById('l3-tiles');
-            tilesContainer.innerHTML = '';
-            const scrambled = item.word.toLowerCase().split('').sort(() => Math.random() - 0.5);
-
-            scrambled.forEach((char) => {
-                const tile = document.createElement('div');
-                tile.className = 'letter-tile lowercase';
-                tile.innerText = char;
-                tile.onclick = () => selectL3Letter(tile, char);
-                tilesContainer.appendChild(tile);
+            appData.leaderboard.push({
+                name: currentUser.name,
+                score: score,
+                correct: correctCount,
+                time: timeTaken
             });
+            appData.leaderboard.sort((a, b) => b.score - a.score || a.time - b.time);
+
+            saveDataLocally();
+            showScreen('screen-result');
         }
 
-        function selectL3Letter(tileEl, char) {
-            const targetWord = appData.level3[currentQuestionIndex].word;
-            if (l3CurrentAnswer.length < targetWord.length && !tileEl.classList.contains('opacity-30')) {
-                l3CurrentAnswer.push(char);
-                tileEl.classList.add('opacity-30', 'pointer-events-none');
-
-                const slotIndex = l3CurrentAnswer.length - 1;
-                document.getElementById(`l3-slot-${slotIndex}`).innerText = char;
-
-                if (l3CurrentAnswer.length === targetWord.length) {
-                    checkL3Answer();
-                }
-            }
-        }
-
-        function clearL3Slots() {
-            l3CurrentAnswer = [];
-            const item = appData.level3[currentQuestionIndex];
-            for (let i = 0; i < item.word.length; i++) {
-                document.getElementById(`l3-slot-${i}`).innerText = '';
-            }
-            const tiles = document.querySelectorAll('#l3-tiles .letter-tile');
-            tiles.forEach(t => t.classList.remove('opacity-30', 'pointer-events-none'));
-        }
-
-        function checkL3Answer() {
-            const item = appData.level3[currentQuestionIndex];
-            const userWord = l3CurrentAnswer.join('').toLowerCase();
-            const feedback = document.getElementById('l3-feedback');
-            feedback.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700');
-
-            if (userWord === item.word.toLowerCase()) {
-                playSound(true);
-                pupilProgress.score += 1;
-                feedback.classList.add('bg-green-100', 'text-green-700');
-                feedback.innerText = "🌟 Fantastic spelling!";
-            } else {
-                playSound(false);
-                feedback.classList.add('bg-red-100', 'text-red-700');
-                feedback.innerText = `💡 The correct spelling is: ${item.word.toLowerCase()}`;
-            }
-
-            setTimeout(() => {
-                currentQuestionIndex++;
-                if (currentQuestionIndex < appData.level3.length) {
-                    renderL3Question();
-                } else {
-                    finishFullGame();
-                }
-            }, 1200);
-        }
-
-        function finishFullGame() {
-            pupilProgress.totalTimeSeconds = Math.round((Date.now() - pupilProgress.startTime) / 1000);
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-            
-            saveLeaderboardEntry(pupilProgress.name, pupilProgress.score, pupilProgress.totalTimeSeconds);
-            alert(`🎉 Congratulations ${pupilProgress.name}!\nYou scored ${pupilProgress.score} points in ${pupilProgress.totalTimeSeconds} seconds!`);
-            showLeaderboard();
-        }
-
-        function saveLeaderboardEntry(name, score, time) {
-            let leaderboard = JSON.parse(localStorage.getItem('food_game_leaderboard') || '[]');
-            leaderboard.push({ name, score, time, date: new Date().toLocaleDateString() });
-            leaderboard.sort((a, b) => b.score - a.score || a.time - b.time);
-            localStorage.setItem('food_game_leaderboard', JSON.stringify(leaderboard));
-        }
-
-        function showLeaderboard() {
-            const leaderboard = JSON.parse(localStorage.getItem('food_game_leaderboard') || '[]');
-            const tbody = document.getElementById('leaderboard-body');
+        function renderLeaderboard() {
+            const tbody = document.getElementById('lb-body');
             tbody.innerHTML = '';
-
-            if (leaderboard.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">No scores recorded yet. Be the first to play!</td></tr>`;
-            } else {
-                leaderboard.slice(0, 10).forEach((entry, idx) => {
-                    let badge = `${idx + 1}`;
-                    if (idx === 0) badge = '🥇 1st';
-                    if (idx === 1) badge = '🥈 2nd';
-                    if (idx === 2) badge = '🥉 3rd';
-
-                    const row = document.createElement('tr');
-                    row.className = 'border-b border-purple-100 hover:bg-purple-50';
-                    row.innerHTML = `
-                        <td class="p-2 font-bold text-purple-700">${badge}</td>
-                        <td class="p-2 font-bold">${entry.name}</td>
-                        <td class="p-2 text-green-600 font-bold">${entry.score} pts</td>
-                        <td class="p-2 text-slate-500">${entry.time}s</td>
-                    `;
-                    tbody.appendChild(row);
-                });
+            if (appData.leaderboard.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">暂无排行榜数据</td></tr>';
+                return;
             }
-            showView('view-leaderboard');
+            appData.leaderboard.slice(0, 20).forEach((entry, idx) => {
+                let badge = `${idx + 1}`;
+                if (idx === 0) badge = '🏆 金奖';
+                else if (idx === 1) badge = '🥈 银奖';
+                else if (idx === 2) badge = '🥉 铜奖';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${badge}</strong></td>
+                    <td>${entry.name}</td>
+                    <td><strong style="color:#2E7D32;">${entry.score}</strong></td>
+                    <td>${entry.correct} / 10</td>
+                    <td>${entry.time} 秒</td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
-        function resetLeaderboard() {
-            if (confirm("Are you sure you want to clear the classroom leaderboard?")) {
-                localStorage.removeItem('food_game_leaderboard');
-                showLeaderboard();
-            }
-        }
-
-        // ==========================================
-        // TEACHER DASHBOARD (PIN: 1234)
-        // ==========================================
-        function promptTeacherPIN() {
-            const pin = prompt("Enter Teacher PIN Code:", "");
+        // --- 5. TEACHER DASHBOARD & DUAL-METHOD EDITOR ---
+        function promptTeacherPin() {
+            const pin = prompt("请输入教师后台密码：", "");
             if (pin === "1234") {
-                openTeacherDashboard();
+                renderDashboard();
+                showScreen('screen-dashboard');
             } else if (pin !== null) {
-                alert("Incorrect PIN Code!");
+                alert("密码错误！默认密码为 1234");
             }
         }
 
-        function openTeacherDashboard() {
-            document.getElementById('cfg-title').value = appData.title;
-            document.getElementById('cfg-subject').value = appData.subject;
-            document.getElementById('cfg-standard').value = appData.standard;
-            document.getElementById('cfg-topic').value = appData.topic;
-            document.getElementById('cfg-teacher').value = appData.teacher;
+        function switchDashTab(tabId) {
+            document.querySelectorAll('.dash-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.dash-content').forEach(c => c.style.display = 'none');
+            event.target.classList.add('active');
+            document.getElementById(tabId).style.display = 'block';
+            if (tabId === 'tab-analytics') renderAnalytics();
+        }
 
-            renderDashboardEditors();
-            showView('view-dashboard');
+        function renderDashboard() {
+            document.getElementById('cfg-title').value = appData.config.title;
+            document.getElementById('cfg-subject').value = appData.config.subject;
+            document.getElementById('cfg-year').value = appData.config.year;
+            document.getElementById('cfg-teacher').value = appData.config.teacher;
+            document.getElementById('cfg-fb-url').value = appData.config.firebaseUrl || '';
+
+            const container = document.getElementById('tab-q1');
+            container.innerHTML = `<h2>修改题目列表 (10题)</h2>`;
+
+            appData.questions.level1.forEach((q, idx) => {
+                const slot = document.createElement('div');
+                slot.className = 'editor-slot';
+                slot.innerHTML = `
+                    <h3 style="color: var(--primary); margin-bottom: 8px;">题目 ${idx + 1}</h3>
+                    <label>题目文本：</label>
+                    <input type="text" value="${q.q}" onchange="updateQData(${idx}, 'q', this.value)">
+
+                    <div class="image-editor-box">
+                        <strong>🖼 题目图片设置（双重模式自动保存）：</strong>
+                        <div style="margin: 6px 0;">
+                            <label style="font-size:0.85rem;">方式 A: 图片网络链接 (URL / Google Drive 直链)</label>
+                            <input type="text" placeholder="https://..." value="${q.img.startsWith('data:') ? '' : q.img}" onchange="updateQData(${idx}, 'img', this.value)">
+                        </div>
+                        <div style="margin: 6px 0;">
+                            <label style="font-size:0.85rem;">方式 B: 本地图片文件上传 (Base64 Data URL 永久保存)</label><br>
+                            <input type="file" accept="image/*" onchange="handleFileUpload(event, ${idx})">
+                        </div>
+                        ${q.img ? `
+                            <div>
+                                <img src="${q.img}" class="preview-thumb"><br>
+                                <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8rem;" onclick="clearPhoto(${idx})">❌ 清除图片</button>
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div><label>选项 A:</label><input type="text" value="${q.options[0]}" onchange="updateOptionData(${idx}, 0, this.value)"></div>
+                        <div><label>选项 B:</label><input type="text" value="${q.options[1]}" onchange="updateOptionData(${idx}, 1, this.value)"></div>
+                        <div><label>选项 C:</label><input type="text" value="${q.options[2]}" onchange="updateOptionData(${idx}, 2, this.value)"></div>
+                        <div><label>选项 D:</label><input type="text" value="${q.options[3]}" onchange="updateOptionData(${idx}, 3, this.value)"></div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                        <div>
+                            <label>正确答案：</label>
+                            <select onchange="updateQData(${idx}, 'ans', parseInt(this.value))">
+                                <option value="0" ${q.ans === 0 ? 'selected' : ''}>选项 A</option>
+                                <option value="1" ${q.ans === 1 ? 'selected' : ''}>选项 B</option>
+                                <option value="2" ${q.ans === 2 ? 'selected' : ''}>选项 C</option>
+                                <option value="3" ${q.ans === 3 ? 'selected' : ''}>选项 D</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>答对奖励分值：</label>
+                            <input type="number" value="${q.score || 10}" onchange="updateQData(${idx}, 'score', parseInt(this.value))">
+                        </div>
+                    </div>
+
+                    <label>答案解析：</label>
+                    <input type="text" value="${q.exp || ''}" onchange="updateQData(${idx}, 'exp', this.value)">
+                `;
+                container.appendChild(slot);
+            });
+        }
+
+        function handleFileUpload(event, qIndex) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                appData.questions.level1[qIndex].img = e.target.result;
+                saveDataLocally();
+                renderDashboard();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearPhoto(qIndex) {
+            appData.questions.level1[qIndex].img = "";
+            saveDataLocally();
+            renderDashboard();
+        }
+
+        function updateQData(qIndex, field, value) {
+            appData.questions.level1[qIndex][field] = value;
+            saveDataLocally();
+        }
+
+        function updateOptionData(qIndex, optIndex, value) {
+            appData.questions.level1[qIndex].options[optIndex] = value;
+            saveDataLocally();
         }
 
         function saveGeneralConfig() {
-            appData.title = document.getElementById('cfg-title').value;
-            appData.subject = document.getElementById('cfg-subject').value;
-            appData.standard = document.getElementById('cfg-standard').value;
-            appData.topic = document.getElementById('cfg-topic').value;
-            appData.teacher = document.getElementById('cfg-teacher').value;
-
-            savePersistentData();
-            alert("Game information updated successfully!");
+            appData.config.title = document.getElementById('cfg-title').value;
+            appData.config.subject = document.getElementById('cfg-subject').value;
+            appData.config.year = document.getElementById('cfg-year').value;
+            appData.config.teacher = document.getElementById('cfg-teacher').value;
+            saveDataLocally();
+            renderHomepageInfo();
+            alert("配置已保存！");
         }
 
-        function renderDashboardEditors() {
-            const container = document.getElementById('editor-l1-container');
+        function saveFirebaseConfig() {
+            appData.config.firebaseUrl = document.getElementById('cfg-fb-url').value.trim();
+            saveDataLocally();
+            alert("Firebase 配置已保存！");
+        }
+
+        function renderAnalytics() {
+            const container = document.getElementById('analytics-list');
             container.innerHTML = '';
-
-            appData.level1.forEach((q, index) => {
-                const card = document.createElement('div');
-                card.className = "bg-white p-4 rounded-2xl border-2 border-slate-200 space-y-3";
-                card.innerHTML = `
-                    <div class="flex justify-between items-center">
-                        <span class="font-fun text-indigo-600">Question ${index + 1} Slot</span>
-                    </div>
-
-                    <div>
-                        <label class="text-xs font-bold text-slate-500">Question Text</label>
-                        <input type="text" value="${q.text}" onchange="updateL1Text(${index}, this.value)" class="w-full p-2 rounded-xl border border-slate-300 text-sm font-bold">
-                    </div>
-
-                    <!-- DUAL-METHOD IMAGE EDITOR -->
-                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
-                        <label class="text-xs font-bold text-slate-600 block">Question Image (URL Link or Local File Upload)</label>
-                        
-                        <div class="flex flex-col md:flex-row items-center gap-3">
-                            <div class="w-20 h-20 bg-slate-200 border border-slate-300 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
-                                <img id="preview-l1-${index}" src="${q.image || ''}" class="${q.image ? '' : 'hidden'} object-contain max-h-full max-w-full" onerror="handleImgError(this)">
-                                <span id="preview-placeholder-l1-${index}" class="${q.image ? 'hidden' : ''} text-xs text-slate-400">No Image</span>
-                            </div>
-
-                            <div class="space-y-2 w-full">
-                                <input type="text" placeholder="Option A: Direct Image Link (https://...)" value="${q.image || ''}" onchange="updateL1ImageURL(${index}, this.value)" class="w-full p-2 rounded-lg border border-slate-300 text-xs">
-                                
-                                <div class="flex gap-2">
-                                    <input type="file" accept="image/*" onchange="handleL1FileUpload(event, ${index})" class="text-xs text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                                    <button onclick="clearL1Image(${index})" class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-md font-bold">Clear</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- MCQ Options (Forced Small Letters) -->
-                    <div class="grid grid-cols-3 gap-2">
-                        <div>
-                            <label class="text-xs font-bold text-slate-500">Option A (Small letters)</label>
-                            <input type="text" value="${q.options[0].toLowerCase()}" onchange="updateL1Option(${index}, 0, this.value)" class="w-full p-1 rounded-lg border border-slate-300 text-xs font-semibold lowercase">
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-slate-500">Option B (Small letters)</label>
-                            <input type="text" value="${q.options[1].toLowerCase()}" onchange="updateL1Option(${index}, 1, this.value)" class="w-full p-1 rounded-lg border border-slate-300 text-xs font-semibold lowercase">
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-slate-500">Option C (Small letters)</label>
-                            <input type="text" value="${q.options[2].toLowerCase()}" onchange="updateL1Option(${index}, 2, this.value)" class="w-full p-1 rounded-lg border border-slate-300 text-xs font-semibold lowercase">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="text-xs font-bold text-slate-500">Correct Answer</label>
-                        <select onchange="updateL1Answer(${index}, this.value)" class="w-full p-2 rounded-xl border border-slate-300 text-xs font-bold lowercase">
-                            <option value="${q.options[0].toLowerCase()}" ${q.answer.toLowerCase() === q.options[0].toLowerCase() ? 'selected' : ''}>${q.options[0].toLowerCase()}</option>
-                            <option value="${q.options[1].toLowerCase()}" ${q.answer.toLowerCase() === q.options[1].toLowerCase() ? 'selected' : ''}>${q.options[1].toLowerCase()}</option>
-                            <option value="${q.options[2].toLowerCase()}" ${q.answer.toLowerCase() === q.options[2].toLowerCase() ? 'selected' : ''}>${q.options[2].toLowerCase()}</option>
-                        </select>
-                    </div>
-                `;
-                container.appendChild(card);
+            const keys = Object.keys(appData.mistakes);
+            if (keys.length === 0) {
+                container.innerHTML = '<p style="color:#888;">暂无答错记录。</p>';
+                return;
+            }
+            keys.forEach(k => {
+                const div = document.createElement('div');
+                div.style.cssText = "padding: 10px; background: #FFEBEE; border-radius: 8px; margin-bottom: 8px; font-weight: bold;";
+                div.innerText = `${k} ➔ 错题次数: ${appData.mistakes[k]} 次`;
+                container.appendChild(div);
             });
         }
 
-        function updateL1Text(idx, val) {
-            appData.level1[idx].text = val;
-            savePersistentData();
-        }
-
-        function updateL1ImageURL(idx, url) {
-            appData.level1[idx].image = url;
-            savePersistentData();
-            refreshImagePreview(idx, url);
-        }
-
-        function handleL1FileUpload(event, idx) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const base64Data = e.target.result;
-                    appData.level1[idx].image = base64Data;
-                    savePersistentData();
-                    refreshImagePreview(idx, base64Data);
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function clearL1Image(idx) {
-            appData.level1[idx].image = "";
-            savePersistentData();
-            refreshImagePreview(idx, "");
-        }
-
-        function refreshImagePreview(idx, src) {
-            const img = document.getElementById(`preview-l1-${idx}`);
-            const placeholder = document.getElementById(`preview-placeholder-l1-${idx}`);
-            if (src) {
-                img.src = src;
-                img.classList.remove('hidden');
-                placeholder.classList.add('hidden');
-            } else {
-                img.src = "";
-                img.classList.add('hidden');
-                placeholder.classList.remove('hidden');
-            }
-        }
-
-        function updateL1Option(qIdx, optIdx, val) {
-            appData.level1[qIdx].options[optIdx] = val.toLowerCase();
-            savePersistentData();
-            renderDashboardEditors();
-        }
-
-        function updateL1Answer(qIdx, val) {
-            appData.level1[qIdx].answer = val.toLowerCase();
-            savePersistentData();
-        }
-
-        function exportJSON() {
+        function exportDataJSON() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
             const dlAnchor = document.createElement('a');
             dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", `food_game_backup_${Date.now()}.json`);
+            dlAnchor.setAttribute("download", `Chinese_ForestRunner_Backup_${new Date().toISOString().slice(0,10)}.json`);
             document.body.appendChild(dlAnchor);
             dlAnchor.click();
             dlAnchor.remove();
         }
 
-        function importJSON(event) {
+        function importDataJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
-                    const imported = JSON.parse(e.target.result);
-                    appData = imported;
-                    normalizeDataToLowercase();
-                    savePersistentData();
-                    openTeacherDashboard();
-                    alert("Game data imported successfully!");
-                } catch(err) {
-                    alert("Invalid JSON file format!");
-                }
+                    const importedData = JSON.parse(e.target.result);
+                    if (importedData.config && importedData.questions) {
+                        appData = importedData;
+                        saveDataLocally();
+                        renderHomepageInfo();
+                        renderDashboard();
+                        alert("JSON 数据成功恢复！");
+                    }
+                } catch(err) { alert("文件解析错误！"); }
             };
-            reader.readAsText(event.target.files[0]);
+            reader.readAsText(file);
         }
 
-        function exportCSV() {
-            const leaderboard = JSON.parse(localStorage.getItem('food_game_leaderboard') || '[]');
-            let csv = "Pupil Name,Score,Time (seconds),Date\n";
-            leaderboard.forEach(r => {
-                csv += `"${r.name}",${r.score},${r.time},"${r.date}"\n`;
-            });
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.setAttribute('href', url);
-            a.setAttribute('download', `classroom_leaderboard_${Date.now()}.csv`);
-            a.click();
+        function resetLeaderboard() {
+            if (confirm("确定要清空排行榜数据吗？")) {
+                appData.leaderboard = [];
+                saveDataLocally();
+                alert("排行榜已清空。");
+            }
         }
+
+        function restoreDefaults() {
+            if (confirm("确定重置回初始默认题目？")) {
+                appData = JSON.parse(JSON.stringify(DEFAULT_APP_DATA));
+                saveDataLocally();
+                renderHomepageInfo();
+                renderDashboard();
+                alert("恢复成功。");
+            }
+        }
+
+        window.onload = function() {
+            initStorage();
+        };
     </script>
 </body>
 </html>
